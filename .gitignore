@@ -31,7 +31,6 @@ data/*.pkl
 data/*.h5
 
 # Fichiers temporaires / résultats
-models/
 outputs/
 checkpoints/
 *.log

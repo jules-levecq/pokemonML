@@ -36,34 +36,3 @@ class PokemonDamageCalculator:
         print(f"Efficacité de {move.element} contre {defender.type1}/{defender.type2 or 'aucun'} : {effectiveness}")
 
         return base_damage * effectiveness
-
-# Classes inchangées
-
-
-class Stats:
-    def __init__(self, health, attack, defense, attack_spe, defense_spe, speed):
-        self.health = health
-        self.attack = attack
-        self.defense = defense
-        self.attack_spe = attack_spe
-        self.defense_spe = defense_spe
-        self.speed = speed
-
-
-class Pokemon:
-    def __init__(self, name, stats, moves, type1, type2=None, level=50):
-        self.name = name
-        self.stats = stats
-        self.type1 = type1
-        self.type2 = type2
-        self.level = level
-        self.moves = moves
-
-
-class Move:
-    def __init__(self, name, element, damage, damage_class, accuracy):
-        self.name = name
-        self.element = element
-        self.damage = damage
-        self.damage_class = damage_class
-        self.accuracy = accuracy

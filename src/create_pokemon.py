@@ -1,5 +1,8 @@
-from pokemon_dammage_calculator import Pokemon, Stats, Move
 import pandas as pd
+
+from .pokemon_dammage_calculator import Pokemon, Stats, Move
+
+
 
 # Création d'un Pokémon en utilisant les données du CSV
 
@@ -27,13 +30,13 @@ def create_pokemon(name: str, pokemon_data):
 # Création d'une attaque en utilisant les données du CSV
 
 def create_move(name: str, moves_data):
-    move_row = moves_data[moves_data['Name'] == name].iloc[0]
+    move_row = moves_data[moves_data['name'] == name].iloc[0]
     move = Move(
         name=name,
-        element=move_row['Type'],
-        damage=int(move_row['Power']),
-        category=move_row['Category'].lower(),
-        accuracy=int(move_row['Accuracy'])
+        element=move_row['type'],
+        damage=int(move_row['power']),
+        damage_class=move_row['damage_class'].lower(),
+        accuracy=int(move_row['accuracy'])
     )
     return move
 

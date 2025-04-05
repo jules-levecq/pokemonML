@@ -1,4 +1,5 @@
-from data_loader import read_csv_data
+from .data_loader import read_csv_data
+
 
 
 
@@ -16,7 +17,7 @@ class PokemonDamageCalculator:
         return self.type_chart.loc[attack_type, defender_type]
 
     def calculateDamage(self, attacker, defender, move):
-        if move.category == 'physical':
+        if move.damage_class == 'Physical':
             attack_stat = attacker.stats.attack
             defense_stat = defender.stats.defense
         else:
@@ -61,15 +62,16 @@ class Pokemon:
 
 
 class Move:
-    def __init__(self, name, element, damage, category, accuracy):
+    def __init__(self, name, element, damage, damage_class, accuracy):
         self.name = name
         self.element = element
         self.damage = damage
-        self.category = category
+        self.damage_class = damage_class
         self.accuracy = accuracy
 
 #A la main version ----------------------------------------------------------------------------------------
 
+"""
 # Exemple d'utilisation
 pikachu_stats = Stats(35, 55, 40, 50, 50, 90)
 pikachu_moves = [Move('Thunderbolt', 'Electric', 90, 'special', 100)]
@@ -80,13 +82,13 @@ bulbasaur_moves = [Move('Vine Whip', 'Grass', 45, 'special', 100)]
 bulbasaur = Pokemon('Bulbasaur', bulbasaur_stats, bulbasaur_moves, 'Grass', 'Poison')
 
 # Création du calculateur en utilisant ta fonction pour lire les données CSV
-damage_calculator = PokemonDamageCalculator('chart.csv')
+damage_calculator = PokemonDamageCalculator('../data/chart.csv')
 
 # Calcul des dégâts
 damage = damage_calculator.calculateDamage(pikachu, bulbasaur, pikachu.moves[0])
 
 print(f"Dégâts infligés par {pikachu.name} avec {pikachu.moves[0].name} à {bulbasaur.name} : {damage:.2f}")
-
+"""
 
 # ----------------------------------------------------------------------------------------
 

@@ -3,11 +3,9 @@ from src import model_builder
 model = model_builder.build_model()
 model.summary()
 
-
-
-from src import  data_loader as dl
+from src import data_loader as dl
 from src import pokemon_dammage_calculator as pdc
-from src import  create_pokemon as cp
+from src import create_pokemon as cp
 
 
 # Chargement des données
@@ -19,7 +17,7 @@ pikachu = cp.create_pokemon("Pikachu", pokemon_data)
 bulbasaur = cp.create_pokemon("Bulbasaur", pokemon_data)
 
 # Création des attaques
-thunderbolt = cp.create_move("Thunderbolt", moves_data)
+thunderbolt = cp.create_move("Thunder Punch", moves_data)
 vine_whip = cp.create_move("Vine Whip", moves_data)
 
 # Attribution des attaques aux Pokémon

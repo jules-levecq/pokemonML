@@ -1,4 +1,4 @@
-# Environnements virtuels
+# Virtual environments
 .venv/
 env/
 venv/
@@ -8,7 +8,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Fichiers compilés
+# Compiled files
 *.so
 *.dll
 *.dylib
@@ -16,12 +16,12 @@ __pycache__/
 # Jupyter notebook
 .ipynb_checkpoints/
 
-# IDE (PyCharm, VSCode, etc.)
+# IDEs (PyCharm, VSCode, etc.)
 .idea/
 *.iml
 .vscode/
 
-# Fichiers de données
+# Data files
 data/*.csv
 data/*.tsv
 data/*.json
@@ -30,12 +30,11 @@ data/*.xlsx
 data/*.pkl
 data/*.h5
 
-# Fichiers temporaires / résultats
-models/
+# Temporary files / outputs
 outputs/
 checkpoints/
 *.log
 
-# Système
+# System files
 .DS_Store
 Thumbs.db

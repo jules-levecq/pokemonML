@@ -21,15 +21,6 @@ __pycache__/
 *.iml
 .vscode/
 
-# Data files
-data/*.csv
-data/*.tsv
-data/*.json
-data/*.zip
-data/*.xlsx
-data/*.pkl
-data/*.h5
-
 # Temporary files / outputs
 outputs/
 checkpoints/

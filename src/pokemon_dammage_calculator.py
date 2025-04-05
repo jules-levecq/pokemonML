@@ -1,8 +1,6 @@
 from .data_loader import read_csv_data
 
 
-
-
 class PokemonDamageCalculator:
     """Classe pour calculer les dégâts d'une attaque Pokémon en utilisant la table d'efficacité des types."""
 
@@ -16,7 +14,7 @@ class PokemonDamageCalculator:
         """Obtenir le multiplicateur d'efficacité selon les types."""
         return self.type_chart.loc[attack_type, defender_type]
 
-    def calculateDamage(self, attacker, defender, move):
+    def calculate_damage(self, attacker, defender, move):
         if move.damage_class == 'Physical':
             attack_stat = attacker.stats.attack
             defense_stat = defender.stats.defense
@@ -51,6 +49,7 @@ class Stats:
         self.defense_spe = defense_spe
         self.speed = speed
 
+
 class Pokemon:
     def __init__(self, name, stats, moves, type1, type2=None, level=50):
         self.name = name
@@ -68,29 +67,3 @@ class Move:
         self.damage = damage
         self.damage_class = damage_class
         self.accuracy = accuracy
-
-#A la main version ----------------------------------------------------------------------------------------
-
-"""
-# Exemple d'utilisation
-pikachu_stats = Stats(35, 55, 40, 50, 50, 90)
-pikachu_moves = [Move('Thunderbolt', 'Electric', 90, 'special', 100)]
-pikachu = Pokemon('Pikachu', pikachu_stats, pikachu_moves, 'Electric')
-
-bulbasaur_stats = Stats(45, 49, 49, 65, 65, 45)
-bulbasaur_moves = [Move('Vine Whip', 'Grass', 45, 'special', 100)]
-bulbasaur = Pokemon('Bulbasaur', bulbasaur_stats, bulbasaur_moves, 'Grass', 'Poison')
-
-# Création du calculateur en utilisant ta fonction pour lire les données CSV
-damage_calculator = PokemonDamageCalculator('../data/chart.csv')
-
-# Calcul des dégâts
-damage = damage_calculator.calculateDamage(pikachu, bulbasaur, pikachu.moves[0])
-
-print(f"Dégâts infligés par {pikachu.name} avec {pikachu.moves[0].name} à {bulbasaur.name} : {damage:.2f}")
-"""
-
-# ----------------------------------------------------------------------------------------
-
-#version avec creat pokemoon ----------------------------------------------------------------------------
-

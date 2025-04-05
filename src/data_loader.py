@@ -1,7 +1,5 @@
 import pandas as pd
 
-import pandas as pd
-
 
 def read_csv_data(csv_path: str) -> pd.DataFrame:
     """
@@ -18,12 +16,4 @@ def read_csv_data(csv_path: str) -> pd.DataFrame:
     # Nettoyage des colonnes (enlève les espaces autour des noms)
     data_frame.columns = data_frame.columns.str.strip()
 
-    return data_frame
-
-
-def read_csv_data_Jules(csv_path: str) -> pd.DataFrame:
-    """
-    Read a csv file with pandas and return its data frame
-    """
-    data_frame = pd.read_csv(csv_path, sep=",")
     return data_frame

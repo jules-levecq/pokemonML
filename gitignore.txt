@@ -1,14 +1,41 @@
-# PyCharm
-.idea/
-
-# Environnement virtuel
-venv/
+# Environnements virtuels
+.venv/
 env/
+venv/
 
-# Fichiers Python compilés
+# Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 
-# Données
+# Fichiers compilés
+*.so
+*.dll
+*.dylib
+
+# Jupyter notebook
+.ipynb_checkpoints/
+
+# IDE (PyCharm, VSCode, etc.)
+.idea/
+*.iml
+.vscode/
+
+# Fichiers de données
 data/*.csv
+data/*.tsv
+data/*.json
 data/*.zip
+data/*.xlsx
+data/*.pkl
+data/*.h5
+
+# Fichiers temporaires / résultats
+models/
+outputs/
+checkpoints/
+*.log
+
+# Système
+.DS_Store
+Thumbs.db

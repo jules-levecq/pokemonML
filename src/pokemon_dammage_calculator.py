@@ -1,5 +1,6 @@
 from data_loader import read_csv_data
 
+
 class PokemonDamageCalculator:
     """Classe pour calculer les dégâts d'une attaque Pokémon en utilisant la table d'efficacité des types."""
 
@@ -37,14 +38,7 @@ class PokemonDamageCalculator:
         return base_damage * effectiveness
 
 # Classes inchangées
-class Pokemon:
-    def __init__(self, name, stats, moves, type1, type2=None, level=50):
-        self.name = name
-        self.stats = stats
-        self.type1 = type1
-        self.type2 = type2
-        self.level = level
-        self.moves = moves
+
 
 class Stats:
     def __init__(self, health, attack, defense, attack_spe, defense_spe, speed):
@@ -54,6 +48,16 @@ class Stats:
         self.attack_spe = attack_spe
         self.defense_spe = defense_spe
         self.speed = speed
+
+class Pokemon:
+    def __init__(self, name, stats, moves, type1, type2=None, level=50):
+        self.name = name
+        self.stats = stats
+        self.type1 = type1
+        self.type2 = type2
+        self.level = level
+        self.moves = moves
+
 
 class Move:
     def __init__(self, name, element, damage, category, accuracy):

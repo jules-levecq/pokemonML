@@ -1,4 +1,5 @@
 from data_loader import read_csv_data
+from create_pokemon import create_pokemon, create_move, add_move_to_pokemon
 
 
 class PokemonDamageCalculator:
@@ -83,3 +84,31 @@ damage_calculator = PokemonDamageCalculator('chart.csv')
 damage = damage_calculator.calculateDamage(pikachu, bulbasaur, pikachu.moves[0])
 
 print(f"Dégâts infligés par {pikachu.name} avec {pikachu.moves[0].name} à {bulbasaur.name} : {damage:.2f}")
+
+
+
+
+# Chargement des données
+pokemon_data = read_csv_data('data/Pokemon.csv')
+moves_data = read_csv_data('data/moves.csv')
+
+# Création des Pokémon
+pikachu = create_pokemon("Pikachu", pokemon_data)
+bulbasaur = create_pokemon("Bulbasaur", pokemon_data)
+
+# Création des attaques
+thunderbolt = create_move("Thunderbolt", moves_data)
+vine_whip = create_move("Vine Whip", moves_data)
+
+# Attribution des attaques aux Pokémon
+add_move_to_pokemon(pikachu, thunderbolt)
+add_move_to_pokemon(bulbasaur, vine_whip)
+
+# Initialisation du calculateur de dégâts
+damage_calculator = PokemonDamageCalculator('data/chart.csv')
+
+# Calcul des dégâts infligés par Pikachu à Bulbasaur
+damage = damage_calculator.calculateDamage(pikachu, bulbasaur, pikachu.moves[0])
+
+# Affichage des résultats
+print(f"{pikachu.name} inflige {damage:.2f} dégâts à {bulbasaur.name} avec l'attaque {pikachu.moves[0].name}.")

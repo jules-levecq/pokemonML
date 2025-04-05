@@ -17,7 +17,7 @@ pikachu = cp.create_pokemon("Pikachu", pokemon_data)
 bulbasaur = cp.create_pokemon("Bulbasaur", pokemon_data)
 
 # Création des attaques
-thunderbolt = cp.create_move("Thunder Punch", moves_data)
+thunderbolt = cp.create_move("Thunderbolt", moves_data)
 vine_whip = cp.create_move("Vine Whip", moves_data)
 
 # Attribution des attaques aux Pokémon

@@ -29,7 +29,8 @@ class PokemonDamageCalculator:
         return self.type_chart.loc[attack_type, defender_type]
 
 
-    def _get_random_damage_multiplier(self):
+    @staticmethod
+    def _get_random_damage_multiplier():
         """
         Return a random damage multiplier (between 0.85 and 1.00) based on a
         non-uniform distribution used in official Pokémon games.
@@ -59,12 +60,15 @@ class PokemonDamageCalculator:
             print(f"{attacker.name}'s {move.name} missed!")
             return 0.0
 
+        #Search if the move did a critic hit
+        random.choice()
+
         # Choose the relevant stats based on the move's category
         if move.damage_class == 'physical':
             attack_stat = attacker.stats.attack
             defense_stat = defender.stats.defense
         else:
-            attack_stat = attacker.stats.attack_spe
+            attack_stat = attacker.current_stats.attack_spe
             defense_stat = defender.stats.defense_spe
 
         # Basic damage formula
@@ -82,5 +86,8 @@ class PokemonDamageCalculator:
 
         # Apply random factor
         random_factor = self._get_random_damage_multiplier()
+
+        #print possible damage range by getting the min damage and the max damage
+        print(f"Damage Range {round(base_damage * 0.85 * effectiveness, 2)} - {round(base_damage * effectiveness, 2) }")
 
         return base_damage * effectiveness * random_factor

@@ -52,7 +52,8 @@ class Pokemon:
         :param level: Level of the Pokémon (default 50)
         """
         self.name = name
-        self.stats = stats
+        self.base_stats = stats
+        self.current_stats = stats
         self.type1 = type1
         self.type2 = type2
         self.level = level

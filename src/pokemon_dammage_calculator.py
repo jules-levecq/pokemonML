@@ -1,4 +1,5 @@
 from .data_loader import read_csv_data
+import random
 
 
 class PokemonDamageCalculator:
@@ -36,6 +37,12 @@ class PokemonDamageCalculator:
         :param move: Move object being used
         :return: Calculated damage as a float
         """
+        # Check if the move hits
+        hit_chance = random.uniform(0, 100)
+        if hit_chance > move.accuracy:
+            print(f"{attacker.name}'s {move.name} missed!")
+            return 0.0
+
         # Choose the relevant stats based on the move's category
         if move.damage_class == 'physical':
             attack_stat = attacker.stats.attack

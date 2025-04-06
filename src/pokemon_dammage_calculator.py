@@ -14,6 +14,7 @@ class Attack:
     effectiveness: float  # Efficacité du move sur le Pokémon adverse
     defender: Pokemon  # Copie du Pokémon adverse tel qu'il était au moment de l'attaque
     attacker: Pokemon  # Copie du Pokémon attaquant tel qu'il était au moment de l'attaque
+    move: object  # Copie du move utilisé lors de l'attaque
 
 
 class PokemonDamageCalculator:
@@ -76,13 +77,13 @@ class PokemonDamageCalculator:
     def calculate_damage(self, attacker, defender, move):
         """
         Calcule les dégâts infligés par une attaque du Pokémon attaquant vers le défenseur.
-        Retourne un objet Attack contenant toutes les informations calculées.
+        Retourne un objet Attack contenant toutes les informations calculées, y compris une copie du move utilisé.
 
         :param attacker: Pokémon qui attaque.
         :param defender: Pokémon qui reçoit l'attaque.
         :param move: Objet move utilisé.
         :return: Objet Attack contenant la range de dégâts, les dégâts effectifs, si l'attaque a raté,
-                 si c'est un coup critique, l'efficacité, ainsi que les copies des Pokémon impliqués.
+                 si c'est un coup critique, l'efficacité, ainsi que les copies des Pokémon et du move impliqués.
         """
         # Vérifier si le move touche
         if not self.move_hit(move):
@@ -94,7 +95,8 @@ class PokemonDamageCalculator:
                 crit=False,
                 effectiveness=0.0,
                 defender=copy.deepcopy(defender),
-                attacker=copy.deepcopy(attacker)
+                attacker=copy.deepcopy(attacker),
+                move=copy.deepcopy(move)
             )
 
         # Déterminer si c'est un coup critique et choisir les statistiques du défenseur en conséquence
@@ -139,7 +141,7 @@ class PokemonDamageCalculator:
 
         effective_damage = base_damage * effectiveness * random_factor
 
-        # Retourner l'objet Attack avec copie des Pokémon pour éviter toute modification ultérieure
+        # Retourner l'objet Attack avec copie des Pokémon et du move pour éviter toute modification ultérieure
         return Attack(
             damage_range=damage_range,
             effective_damage=effective_damage,
@@ -147,5 +149,6 @@ class PokemonDamageCalculator:
             crit=is_crit,
             effectiveness=effectiveness,
             defender=copy.deepcopy(defender),
-            attacker=copy.deepcopy(attacker)
+            attacker=copy.deepcopy(attacker),
+            move=copy.deepcopy(move)
         )

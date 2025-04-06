@@ -14,10 +14,19 @@ bulbasaur = factory.create_pokemon("Bulbasaur")
 factory.add_move_to_pokemon(pikachu, "Thunder")
 factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
-# Calculate min and max damage
 
+list_attack = []
 # Calculate damage
-damage = damage_calculator.calculate_damage(pikachu, bulbasaur, pikachu.moves[0])
+for i in range(50) :
+    damage = damage_calculator.calculate_damage(pikachu, bulbasaur, pikachu.moves[0])
+    # Display the result
+    print(f"{pikachu.name} deals {damage.effective_damage:.2f} damage to {bulbasaur.name} using {pikachu.moves[0].name}.")
 
-# Display the result
-print(f"{pikachu.name} deals {damage:.2f} damage to {bulbasaur.name} using {pikachu.moves[0].name}.")
+    # Store the damage in a list
+    list_attack.append(damage)
+
+    #si c'est un coup critique, on arrête la boucle
+    if damage.crit:
+        break
+    
+

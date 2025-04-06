@@ -49,7 +49,7 @@ class PokemonDamageCalculator:
         Calcul if the Pokémon did a critic strike
         :return: bool 0 or 1
         """
-        
+        return 1
 
     def calculate_damage(self, attacker, defender, move):
         """
@@ -67,20 +67,22 @@ class PokemonDamageCalculator:
             return 0.0
 
         #Search if the move did a critic hit
-        crit_chance = random.randint(0,9)
-        attacker_stat = None
-        if not crit_chance :
-            attacker_stat = attacker.base_stats
+        defender_stats = None
+        if not self.calculate_critic_chance(attacker) :
+            #if no we take the currents stats of the de defender
+            defender_stats = attacker.curent_stats
         else :
-            attacker_stat = attacker.base_stats
+            #if yes we ignore his malus or bonus defend stats and take the base stats
+            defender_stats = attacker.base_stats
+            print("It critical hit !")
 
         # Choose the relevant stats based on the move's category
         if move.damage_class == 'physical':
-            attack_stat = attacker_stat.attack
-            defense_stat = attacker_stat.defense
+            attack_stat = attacker.current_stats.attack
+            defense_stat = defender_stats.defense
         else:
-            attack_stat = attacker_stat.attack_spe
-            defense_stat = attacker_stat.defense_spe
+            attack_stat = attacker.current_stats.attack_spe
+            defense_stat = defender_stats.defense_spe
 
         # Basic damage formula
         base_damage = (((2 * attacker.level / 5 + 2) * move.damage * (attack_stat / defense_stat)) / 50) + 2

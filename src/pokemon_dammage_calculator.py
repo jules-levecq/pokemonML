@@ -28,6 +28,22 @@ class PokemonDamageCalculator:
         """
         return self.type_chart.loc[attack_type, defender_type]
 
+
+    def _get_random_damage_multiplier(self):
+        """
+        Return a random damage multiplier (between 0.85 and 1.00) based on a
+        non-uniform distribution used in official Pokémon games.
+        """
+        weighted_values = (
+                [85, 87, 89, 90, 92, 94, 96, 98] * 3 +  # 7.69% each
+                [86, 88, 91, 93, 95, 97, 99] * 2 +  # 5.13% each
+                [100]  # 2.56%
+        )
+        r = random.choice(weighted_values)
+        print(f"Random damage multiplier (R): {r} → factor {r / 100:.2f}")
+        return r / 100
+
+
     def calculate_damage(self, attacker, defender, move):
         """
         Calculate the damage inflicted by a move from attacker to defender.
@@ -64,10 +80,7 @@ class PokemonDamageCalculator:
             effectiveness *= self.get_effectiveness(move.element, defender.type2)
         print(f"Effectiveness of {move.element} against {defender.type1}/{defender.type2 or 'None'}: {effectiveness}")
 
-        # Random factor between 0.85 and 1.00
-        weighted_r_values = ([85, 87, 89, 90, 92, 94, 96, 98] * 3 + [86, 88, 91, 93, 95, 97, 99] * 2 + [100])
-        r = random.choice(weighted_r_values)
-        random_factor = r / 100
-        print(f"Random damage multiplier (R): {r} → factor {random_factor:.2f}")
+        # Apply random factor
+        random_factor = self._get_random_damage_multiplier()
 
         return base_damage * effectiveness * random_factor

@@ -43,6 +43,14 @@ class PokemonDamageCalculator:
         print(f"Random damage multiplier (R): {r} → factor {r / 100:.2f}")
         return r / 100
 
+    @staticmethod
+    def calculate_critic_chance(pokemon):
+        """
+        Calcul if the Pokémon did a critic strike
+        :return: bool 0 or 1
+        """
+        
+
     def calculate_damage(self, attacker, defender, move):
         """
         Calculate the damage inflicted by a move from attacker to defender.
@@ -59,15 +67,20 @@ class PokemonDamageCalculator:
             return 0.0
 
         #Search if the move did a critic hit
-        random.choice()
+        crit_chance = random.randint(0,9)
+        attacker_stat = None
+        if not crit_chance :
+            attacker_stat = attacker.base_stats
+        else :
+            attacker_stat = attacker.base_stats
 
         # Choose the relevant stats based on the move's category
         if move.damage_class == 'physical':
-            attack_stat = attacker.stats.attack
-            defense_stat = defender.stats.defense
+            attack_stat = attacker_stat.attack
+            defense_stat = attacker_stat.defense
         else:
-            attack_stat = attacker.current_stats.attack_spe
-            defense_stat = defender.stats.defense_spe
+            attack_stat = attacker_stat.attack_spe
+            defense_stat = attacker_stat.defense_spe
 
         # Basic damage formula
         base_damage = (((2 * attacker.level / 5 + 2) * move.damage * (attack_stat / defense_stat)) / 50) + 2

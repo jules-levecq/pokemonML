@@ -3,7 +3,17 @@ from .data_loader import read_csv_data
 
 
 class Stats:
+    """Class representing a Pokémon's stats."""
     def __init__(self, health, attack, defense, attack_spe, defense_spe, speed):
+        """
+        Initialize the stats of a Pokémon.
+        :param health: HP value
+        :param attack: Physical attack value
+        :param defense: Physical defense value
+        :param attack_spe: Special attack value
+        :param defense_spe: Special defense value
+        :param speed: Speed value
+        """
         self.health = health
         self.attack = attack
         self.defense = defense
@@ -13,16 +23,34 @@ class Stats:
 
 
 class Move:
+    """Class representing a Pokémon move."""
     def __init__(self, name, element, damage, category, accuracy):
+        """
+        Initialize a move.
+        :param name: Name of the move
+        :param element: Type of the move (e.g., Electric, Grass)
+        :param damage: Base damage to the move
+        :param category: Damage category ('physical' or 'special')
+        :param accuracy: Accuracy percentage of the move
+        """
         self.name = name
         self.element = element
         self.damage = damage
-        self.damage_class = category  # "physical" ou "special"
+        self.damage_class = category  # "physical" or "special"
         self.accuracy = accuracy
 
 
 class Pokemon:
+    """Class representing a Pokémon entity."""
     def __init__(self, name, stats, type1, type2=None, level=50):
+        """
+        Initialize a Pokémon.
+        :param name: Name of the Pokémon
+        :param stats: Stats object
+        :param type1: Primary type
+        :param type2: Secondary type (optional)
+        :param level: Level of the Pokémon (default 50)
+        """
         self.name = name
         self.stats = stats
         self.type1 = type1
@@ -31,18 +59,30 @@ class Pokemon:
         self.moves = []
 
     def add_move(self, move):
+        """Add a move to the Pokémon's move list (max 4 moves)."""
         if len(self.moves) < 4:
             self.moves.append(move)
         else:
-            raise Exception(f"{self.name} ne peut pas avoir plus de 4 attaques.")
+            raise Exception(f"{self.name} cannot have more than 4 moves.")
 
 
 class PokemonFactory:
+    """Factory class to create Pokémon and moves from CSV data."""
     def __init__(self, pokemon_csv_path: str, moves_csv_path: str):
+        """
+        Load Pokémon and move data from CSV files.
+        :param pokemon_csv_path: Path to the Pokémon data CSV
+        :param moves_csv_path: Path to the move data CSV
+        """
         self.pokemon_data = read_csv_data(pokemon_csv_path)
         self.moves_data = read_csv_data(moves_csv_path)
 
     def create_pokemon(self, name: str):
+        """
+        Create a Pokémon instance by name.
+        :param name: Name of the Pokémon
+        :return: A new Pokemon object
+        """
         pokemon_row = self.pokemon_data[self.pokemon_data['Name'] == name].iloc[0]
         stats = Stats(
             health=int(pokemon_row['HP']),
@@ -63,6 +103,11 @@ class PokemonFactory:
         return pokemon
 
     def create_move(self, name: str):
+        """
+        Create a Move instance by name.
+        :param name: Name of the move
+        :return: A new Move object
+        """
         move_row = self.moves_data[self.moves_data['name'] == name].iloc[0]
         move = Move(
             name=name,
@@ -74,11 +119,18 @@ class PokemonFactory:
         return move
 
     def add_move_to_pokemon(self, pokemon: Pokemon, move_name: str):
+        """
+        Add a move to a Pokémon by name.
+        :param pokemon: The Pokémon instance
+        :param move_name: Name of the move to add
+        """
         move = self.create_move(move_name)
         pokemon.add_move(move)
 
     def get_pokemon_data(self):
+        """Return the raw Pokémon DataFrame."""
         return self.pokemon_data
 
     def get_moves_data(self):
+        """Return the raw moves DataFrame."""
         return self.moves_data

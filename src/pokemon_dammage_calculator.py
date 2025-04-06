@@ -1,5 +1,6 @@
 from .data_loader import read_csv_data
 import random
+from .create_pokemon import Pokemon
 
 
 class PokemonDamageCalculator:
@@ -44,12 +45,18 @@ class PokemonDamageCalculator:
         return r / 100
 
     @staticmethod
-    def calculate_critic_chance(pokemon):
+    def is_crit_hit(pokemon):
         """
-        Calcul if the Pokémon did a critic strike
-        :return: bool 0 or 1
-        """
-        return 1
+    Determine whether a move is a critical hit based on the Pokémon's crit chance.
+
+    :param pokemon: The attacking Pokémon
+    :return: True if it's a critical hit, False otherwise
+    """
+        return random.random() <= pokemon.base_stats.get_crit_chance()
+
+    @staticmethod
+    def move_hit(move):
+        return random.uniform(0, 100) < move.accuracy
 
     def calculate_damage(self, attacker, defender, move):
         """
@@ -61,46 +68,43 @@ class PokemonDamageCalculator:
         :return: Calculated damage as a float
         """
         # Check if the move hits
-        hit_chance = random.uniform(0, 100)
-        if hit_chance > move.accuracy:
-            print(f"{attacker.name}'s {move.name} missed!")
-            return 0.0
+        if self.move_hit(move):
 
-        #Search if the move did a critic hit
-        defender_stats = None
-        if not self.calculate_critic_chance(attacker) :
-            #if no we take the currents stats of the de defender
-            defender_stats = attacker.curent_stats
-        else :
-            #if yes we ignore his malus or bonus defend stats and take the base stats
-            defender_stats = attacker.base_stats
-            print("It critical hit !")
+            # Search if the move did a critic hit
+            defender_stats = defender.current_stats
+            if self.is_crit_hit(attacker):
+                # We ignore his malus or bonus defend stats and take the base stats
+                defender_stats = defender.base_stats
+                print("It is a critical hit !")
 
-        # Choose the relevant stats based on the move's category
-        if move.damage_class == 'physical':
-            attack_stat = attacker.current_stats.attack
-            defense_stat = defender_stats.defense
-        else:
-            attack_stat = attacker.current_stats.attack_spe
-            defense_stat = defender_stats.defense_spe
+            # Choose the relevant stats based on the move's category
+            if move.damage_class == 'physical':
+                attack_stat = attacker.current_stats.attack
+                defense_stat = defender_stats.defense
+            else:
+                attack_stat = attacker.current_stats.attack_spe
+                defense_stat = defender_stats.defense_spe
 
-        # Basic damage formula
-        base_damage = (((2 * attacker.level / 5 + 2) * move.damage * (attack_stat / defense_stat)) / 50) + 2
+            # Basic damage formula
+            base_damage = (((2 * attacker.level / 5 + 2) * move.damage * (attack_stat / defense_stat)) / 50) + 2
 
-        # Apply STAB (Same-Type Attack Bonus)
-        if move.element == attacker.type1 or move.element == attacker.type2:
-            base_damage *= 1.5
+            # Apply STAB (Same-Type Attack Bonus)
+            if move.element == attacker.type1 or move.element == attacker.type2:
+                base_damage *= 1.5
 
-        # Calculate effectiveness based on defender's types
-        effectiveness = self.get_effectiveness(move.element, defender.type1)
-        if defender.type2:
-            effectiveness *= self.get_effectiveness(move.element, defender.type2)
-        print(f"Effectiveness of {move.element} against {defender.type1}/{defender.type2 or 'None'}: {effectiveness}")
+            # Calculate effectiveness based on defender's types
+            effectiveness = self.get_effectiveness(move.element, defender.type1)
+            if defender.type2:
+                effectiveness *= self.get_effectiveness(move.element, defender.type2)
+            print(f"Effectiveness of {move.element} against {defender.type1}/{defender.type2 or 'None'}:{effectiveness}")
 
-        # Apply random factor
-        random_factor = self.get_random_damage_multiplier()
+            # Apply random factor
+            random_factor = self.get_random_damage_multiplier()
 
-        #print possible damage range by getting the min damage and the max damage
-        print(f"Damage Range {round(base_damage * 0.85 * effectiveness, 2)} - {round(base_damage * effectiveness, 2) }")
+            # Print possible damage range by getting the min damage and the max damage
+            print(f"Damage Range {round(base_damage * 0.85 * effectiveness,2)} - {round(base_damage * effectiveness,2)}")
 
-        return base_damage * effectiveness * random_factor
+            return base_damage * effectiveness * random_factor
+
+        print(f"{attacker.name}'s {move.name} missed!")
+        return 0.0

@@ -1,43 +1,7 @@
 import pandas as pd
 from .data_loader import read_csv_data
-
-
-class Stats:
-    """Class representing a Pokémon's stats."""
-    def __init__(self, health, attack, defense, attack_spe, defense_spe, speed):
-        """
-        Initialize the stats of a Pokémon.
-        :param health: HP value
-        :param attack: Physical attack value
-        :param defense: Physical defense value
-        :param attack_spe: Special attack value
-        :param defense_spe: Special defense value
-        :param speed: Speed value
-        """
-        self.health = health
-        self.attack = attack
-        self.defense = defense
-        self.attack_spe = attack_spe
-        self.defense_spe = defense_spe
-        self.speed = speed
-
-
-class Move:
-    """Class representing a Pokémon move."""
-    def __init__(self, name, element, damage, category, accuracy):
-        """
-        Initialize a move.
-        :param name: Name of the move
-        :param element: Type of the move (e.g., Electric, Grass)
-        :param damage: Base damage to the move
-        :param category: Damage category ('physical' or 'special')
-        :param accuracy: Accuracy percentage of the move
-        """
-        self.name = name
-        self.element = element
-        self.damage = damage
-        self.damage_class = category  # "physical" or "special"
-        self.accuracy = accuracy
+from .stats import Stats
+from .moves import Move
 
 
 class Pokemon:
@@ -53,7 +17,7 @@ class Pokemon:
         """
         self.name = name
         self.base_stats = stats
-        self.current_stats = stats
+        self.current_stats = stats.clone()
         self.type1 = type1
         self.type2 = type2
         self.level = level
@@ -82,7 +46,7 @@ class PokemonFactory:
         """
         Create a Pokémon instance by name.
         :param name: Name of the Pokémon
-        :return: A new Pokemon object
+        :return: A new Pokémon object
         """
         pokemon_row = self.pokemon_data[self.pokemon_data['Name'] == name].iloc[0]
         stats = Stats(

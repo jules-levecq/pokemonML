@@ -14,8 +14,7 @@ bulbasaur = factory.create_pokemon("Bulbasaur")
 factory.add_move_to_pokemon(pikachu, "Thunder")
 factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
-#calculate min and max damage
-
+# Calculate min and max damage
 
 # Calculate damage
 damage = damage_calculator.calculate_damage(pikachu, bulbasaur, pikachu.moves[0])

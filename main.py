@@ -10,7 +10,7 @@ pikachu = factory.create_pokemon("Pikachu")
 bulbasaur = factory.create_pokemon("Bulbasaur")
 
 # Add moves
-factory.add_move_to_pokemon(pikachu, "Horn Drill")
+factory.add_move_to_pokemon(pikachu, "Thunderbolt")
 factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
 # Calculate damage

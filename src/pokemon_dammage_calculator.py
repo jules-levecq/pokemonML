@@ -62,7 +62,12 @@ class PokemonDamageCalculator:
         effectiveness = self.get_effectiveness(move.element, defender.type1)
         if defender.type2:
             effectiveness *= self.get_effectiveness(move.element, defender.type2)
-
         print(f"Effectiveness of {move.element} against {defender.type1}/{defender.type2 or 'None'}: {effectiveness}")
 
-        return base_damage * effectiveness
+        # Random factor between 0.85 and 1.00
+        weighted_r_values = ([85, 87, 89, 90, 92, 94, 96, 98] * 3 + [86, 88, 91, 93, 95, 97, 99] * 2 + [100])
+        r = random.choice(weighted_r_values)
+        random_factor = r / 100
+        print(f"Random damage multiplier (R): {r} → factor {random_factor:.2f}")
+
+        return base_damage * effectiveness * random_factor

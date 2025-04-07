@@ -1,7 +1,7 @@
 import random
 import copy
 from dataclasses import dataclass
-from .data_loader import read_csv_data
+from .utils import read_csv_data
 from .create_pokemon import Pokemon
 
 

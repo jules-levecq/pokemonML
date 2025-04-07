@@ -1,5 +1,6 @@
 from src.create_pokemon import PokemonFactory
 from src.pokemon_dammage_calculator import PokemonDamageCalculator
+from src.utils import display_damage_result
 
 
 # Initialize the factory and the damage calculator
@@ -20,13 +21,12 @@ list_attack = []
 for i in range(50) :
     damage = damage_calculator.calculate_damage(pikachu, bulbasaur, pikachu.moves[0])
     # Display the result
-    print(f"{pikachu.name} deals {damage.effective_damage:.2f} damage to {bulbasaur.name} using {pikachu.moves[0].name}.")
+    display_damage_result(pikachu, bulbasaur, pikachu.moves[0], damage)
 
     # Store the damage in a list
     list_attack.append(damage)
 
-    #si c'est un coup critique, on arrête la boucle
+    # Si c'est un coup critique, on arrête la boucle
     if damage.crit:
+        print("Critical hit achieved! Ending simulation.")
         break
-    
-

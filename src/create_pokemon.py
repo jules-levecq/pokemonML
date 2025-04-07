@@ -1,5 +1,5 @@
 import pandas as pd
-from .data_loader import read_csv_data
+from .utils import read_csv_data
 from .stats import Stats
 from .moves import Move
 

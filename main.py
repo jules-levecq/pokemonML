@@ -1,5 +1,6 @@
 from src.create_pokemon import PokemonFactory
 from src.pokemon_dammage_calculator import PokemonDamageCalculator
+from src.right_move_machine import RightMoveMachine
 from src.utils import display_damage_result
 
 
@@ -13,6 +14,9 @@ bulbasaur = factory.create_pokemon("Bulbasaur")
 
 # Add moves
 factory.add_move_to_pokemon(pikachu, "Thunder")
+factory.add_move_to_pokemon(pikachu, "Quick Attack")
+factory.add_move_to_pokemon(pikachu, "Iron Tail")
+factory.add_move_to_pokemon(pikachu, "Volt Tackle")
 factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
 
@@ -30,3 +34,7 @@ for i in range(50) :
     if damage.crit:
         print("Critical hit achieved! Ending simulation. At the step", i + 1)
         break
+
+#find the best move
+best_attack = RightMoveMachine.find_best_move(pikachu, bulbasaur)
+display_damage_result(pikachu, bulbasaur, best_attack.move, best_attack)

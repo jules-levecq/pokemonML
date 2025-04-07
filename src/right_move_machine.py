@@ -1,7 +1,4 @@
-
 from pokemon_dammage_calculator import PokemonDamageCalculator, Attack
-from utils import read_csv_data, display_damage_result
-from dataclasses import dataclass
 from create_pokemon import PokemonFactory, Stats, Move, Pokemon
 
 class RightMoveMachine:
@@ -14,7 +11,8 @@ class RightMoveMachine:
         self.factory = PokemonFactory('data/pokemon.csv', 'data/moves.csv')
         self.damage_calculator = PokemonDamageCalculator(csv_path)
 
-    def find_best_move(self, attacker: Pokemon, defender: Pokemon) -> Attack:
+    @staticmethod
+    def find_best_move(attacker: Pokemon, defender: Pokemon) -> Attack:
         """
         Find the best move for the attacker against the defender.
 
@@ -24,10 +22,17 @@ class RightMoveMachine:
         """
         best_attack = None
 
-        for move in attacker.moves:
-            attack_result = self.damage_calculator.calculate_damage(attacker, defender, move)
+        #initialize damage calculator beacause it is a static method
+        damage_calculator = PokemonDamageCalculator('data/chart.csv')
 
-            if not best_attack or attack_result.effective_damage > best_attack.effective_damage:
+        for move in attacker.moves:
+            attack_result = damage_calculator.calculate_damage(attacker, defender, move)
+
+            # Check if this is the first attack or if it's better than the current best by checking the average of the damage range
+            if best_attack is None or (attack_result.damage_range[0] + attack_result.damage_range[1]) / 2 > (
+                    best_attack.damage_range[0] + best_attack.damage_range[1]) / 2:
                 best_attack = attack_result
 
         return best_attack
+
+    

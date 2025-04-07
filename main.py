@@ -28,5 +28,5 @@ for i in range(50) :
 
     # Si c'est un coup critique, on arrête la boucle
     if damage.crit:
-        print("Critical hit achieved! Ending simulation.")
+        print("Critical hit achieved! Ending simulation. At the step", i + 1)
         break

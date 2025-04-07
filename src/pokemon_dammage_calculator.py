@@ -7,26 +7,29 @@ from .create_pokemon import Pokemon
 
 @dataclass
 class Attack:
+    """
+    Dataclass representing the result of a single attack calculation.
+    """
     damage_range: tuple  # (min_damage, max_damage)
-    effective_damage: float  # Dégâts réellement infligés
-    missed: bool  # True si l'attaque a raté
-    crit: bool  # True si l'attaque a été un coup critique
-    effectiveness: float  # Efficacité du move sur le Pokémon adverse
-    defender: Pokemon  # Copie du Pokémon adverse tel qu'il était au moment de l'attaque
-    attacker: Pokemon  # Copie du Pokémon attaquant tel qu'il était au moment de l'attaque
-    move: object  # Copie du move utilisé lors de l'attaque
+    effective_damage: float  # Actual damage dealt
+    missed: bool  # True if the move missed
+    crit: bool  # True if it was a critical hit
+    effectiveness: float  # Type effectiveness multiplier
+    defender: Pokemon  # Snapshot of the defender at the time of the attack
+    attacker: Pokemon  # Snapshot of the attacker at the time of the attack
+    move: object  # Copy of the move used
 
 
 class PokemonDamageCalculator:
     """
-    Classe pour calculer les dégâts d'une attaque en fonction des statistiques de combat et de l'efficacité des types.
+    Class responsible for computing damage based on Pokémon stats and type effectiveness.
     """
 
     def __init__(self, csv_path):
         """
-        Charge le graphique d'efficacité des types à partir d'un fichier CSV.
+        Initialize the calculator by loading the type effectiveness chart.
 
-        :param csv_path: Chemin vers le fichier CSV.
+        :param csv_path: Path to the type chart CSV file.
         """
         type_chart_df = read_csv_data(csv_path)
         type_chart_df.set_index('Attacking', inplace=True)
@@ -34,58 +37,73 @@ class PokemonDamageCalculator:
 
     def get_effectiveness(self, attack_type, defender_type):
         """
-        Récupère le multiplicateur d'efficacité pour un type d'attaque face au type du défenseur.
+        Get the type effectiveness multiplier between attack and defense type.
 
-        :param attack_type: Type de l'attaque (ex: "Electric")
-        :param defender_type: Type du défenseur (ex: "Water")
-        :return: Multiplicateur sous forme de float (ex: 0.5, 1.0, 2.0)
+        :param attack_type: Element type of the move (e.g., "Electric")
+        :param defender_type: Defender's type (e.g., "Water")
+        :return: Effectiveness multiplier as float (e.g., 0.5, 1.0, 2.0)
         """
         return self.type_chart.loc[attack_type, defender_type]
 
     @staticmethod
     def get_random_damage_multiplier():
         """
-        Retourne un multiplicateur de dégâts aléatoire (entre 0.85 et 1.00) selon une
-        distribution non uniforme, comme dans les jeux officiels Pokémon.
+        Return a random multiplier between 0.85 and 1.00,
+        simulating in-game damage variation using a non-uniform distribution.
+
+        :return: Multiplier as float
         """
         weighted_values = (
-                [85, 87, 89, 90, 92, 94, 96, 98] * 3 +  # 7.69% chacun
-                [86, 88, 91, 93, 95, 97, 99] * 2 +  # 5.13% chacun
-                [100]  # 2.56%
+                [85, 87, 89, 90, 92, 94, 96, 98] * 3 +  # ~7.69% each
+                [86, 88, 91, 93, 95, 97, 99] * 2 +  # ~5.13% each
+                [100]  # ~2.56%
         )
-        r = random.choice(weighted_values)
-        print(f"Random damage multiplier (R): {r} → factor {r / 100:.2f}")
-        return r / 100
+        random_multiplier = random.choice(weighted_values)
+        print(f"Random damage multiplier (R): {random_multiplier} → factor {random_multiplier / 100:.2f}")
+        return random_multiplier / 100
 
     @staticmethod
     def is_crit_hit(pokemon):
         """
-        Détermine si l'attaque est un coup critique en fonction de la chance critique du Pokémon.
+        Determine whether the move is a critical hit based on the attacker's crit chance.
 
-        :param pokemon: Le Pokémon attaquant.
-        :return: True si c'est un coup critique, False sinon.
+        :param pokemon: The attacking Pokémon
+        :return: True if it's a critical hit, False otherwise
         """
         return random.random() <= pokemon.base_stats.get_crit_chance()
 
     @staticmethod
     def move_hit(move):
         """
-        Détermine si l'attaque touche en comparant une valeur aléatoire à la précision du move.
+        Determine whether the move successfully hits, based on its accuracy.
+
+        :param move: The move object
+        :return: True if the move hits, False if it misses
         """
         return random.uniform(0, 100) < move.accuracy
 
+    @staticmethod
+    def display_damage_range(base_damage, effectiveness):
+        """
+        Calculate and return the minimum and maximum possible damage values.
+
+        :param base_damage: The base damage before randomness
+        :param effectiveness: The effectiveness multiplier
+        :return: Tuple (min_damage, max_damage)
+        """
+        return round(base_damage * 0.85 * effectiveness, 2), round(base_damage * effectiveness, 2)
+
     def calculate_damage(self, attacker, defender, move):
         """
-        Calcule les dégâts infligés par une attaque du Pokémon attaquant vers le défenseur.
-        Retourne un objet Attack contenant toutes les informations calculées, y compris une copie du move utilisé.
+        Perform a full damage calculation from one Pokémon to another using a move.
 
-        :param attacker: Pokémon qui attaque.
-        :param defender: Pokémon qui reçoit l'attaque.
-        :param move: Objet move utilisé.
-        :return: Objet Attack contenant la range de dégâts, les dégâts effectifs, si l'attaque a raté,
-                 si c'est un coup critique, l'efficacité, ainsi que les copies des Pokémon et du move impliqués.
+        :param attacker: The attacking Pokémon
+        :param defender: The defending Pokémon
+        :param move: The move being used
+        :return: An Attack object with detailed result data
         """
-        # Vérifier si le move touche
+
+        # Step 1: Check if the move hits
         if not self.move_hit(move):
             print(f"{attacker.name}'s {move.name} missed!")
             return Attack(
@@ -99,13 +117,11 @@ class PokemonDamageCalculator:
                 move=copy.deepcopy(move)
             )
 
-        # Déterminer si c'est un coup critique et choisir les statistiques du défenseur en conséquence
+        # Step 2: Determine critical hit and which stats to use
         is_crit = self.is_crit_hit(attacker)
         defender_stats = defender.base_stats if is_crit else defender.current_stats
-        if is_crit:
-            print("It is a critical hit!")
 
-        # Sélectionner les statistiques en fonction de la catégorie du move
+        # Step 3: Choose relevant attack/defense stats depending on move category
         if move.damage_class == 'physical':
             attack_stat = attacker.current_stats.attack
             defense_stat = defender_stats.defense
@@ -113,38 +129,33 @@ class PokemonDamageCalculator:
             attack_stat = attacker.current_stats.attack_spe
             defense_stat = defender_stats.defense_spe
 
-        # Formule de base pour le calcul des dégâts
+        # Step 4: Apply base damage formula
         base_damage = (((2 * attacker.level / 5 + 2) * move.damage * (attack_stat / defense_stat)) / 50) + 2
 
-        # Application du bonus STAB (Same-Type Attack Bonus)
+        # Step 5: Apply STAB (Same-Type Attack Bonus)
         if move.element == attacker.type1 or move.element == attacker.type2:
             base_damage *= 1.5
 
-        # Calcul de l'efficacité en fonction des types du défenseur
+        # Step 6: Apply type effectiveness multiplier
         effectiveness = self.get_effectiveness(move.element, defender.type1)
         if defender.type2:
             effectiveness *= self.get_effectiveness(move.element, defender.type2)
-        print(f"Effectiveness of {move.element} against {defender.type1}/{defender.type2 or 'None'}: {effectiveness}")
 
-        # Calcul de la range de dégâts (valeurs min et max)
-        min_damage = round(base_damage * 0.85 * effectiveness, 2)
-        max_damage = round(base_damage * effectiveness, 2)
-        damage_range = (min_damage, max_damage)
-        print(f"Damage Range {min_damage} - {max_damage}")
+        # Step 7: Display damage range (for info/logging)
+        damage_range = self.display_damage_range(base_damage, effectiveness)
+        print(f"Damage Range {damage_range[0]} - {damage_range[1]}")
 
-        # Facteur aléatoire
-        random_factor = self.get_random_damage_multiplier()
-
-        # Appliquer le multiplicateur de coup critique si nécessaire
+        # Step 8: Apply critical damage bonus if needed
         if is_crit:
             base_damage *= 1.5
 
-        effective_damage = base_damage * effectiveness * random_factor
+        # Step 9: Apply random factor to simulate real in-game variance
+        random_factor = self.get_random_damage_multiplier()
 
-        # Retourner l'objet Attack avec copie des Pokémon et du move pour éviter toute modification ultérieure
+        # Step 10: Return full attack result as a dataclass
         return Attack(
             damage_range=damage_range,
-            effective_damage=effective_damage,
+            effective_damage=base_damage * effectiveness * random_factor,
             missed=False,
             crit=is_crit,
             effectiveness=effectiveness,

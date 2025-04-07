@@ -37,4 +37,3 @@ def display_damage_result(attacker, defender, move, damage_result):
     if damage_result.crit:
         print("→ It's a critical hit!")
     print(f"→ Effectiveness: x{damage_result.effectiveness:.2f}")
-    print(f"→ Damage dealt: {damage_result.effective_damage:.2f}")

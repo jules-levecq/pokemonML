@@ -31,9 +31,8 @@ def display_damage_result(attacker, defender, move, damage_result):
     :param defender: The defending Pokémon
     :param move: The Move object used
     :param damage_result: The object returned by calculate_damage()
-    :param turn: Optional turn number for display
     """
-    print(f"{attacker.name} deals {damage_result.effective_damage:.2f} damage to {defender.name} using {attacker.moves[0].name}.")
+    print(f"{attacker.name} deals {damage_result.effective_damage:.2f} damage to {defender.name} using {move.name}.")
     if damage_result.crit:
         print("→ It's a critical hit!")
     print(f"→ Effectiveness: x{damage_result.effectiveness:.2f} \n")

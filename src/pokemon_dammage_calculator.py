@@ -46,7 +46,7 @@ class PokemonDamageCalculator:
         return self.type_chart.loc[attack_type, defender_type]
 
     @staticmethod
-    def get_random_damage_multiplier():
+    def get_random_damage_multiplier(is_random=True):
         """
         Return a random multiplier between 0.85 and 1.00,
         simulating in-game damage variation using a non-uniform distribution.
@@ -58,9 +58,12 @@ class PokemonDamageCalculator:
                 [86, 88, 91, 93, 95, 97, 99] * 2 +  # ~5.13% each
                 [100]  # ~2.56%
         )
-        random_multiplier = random.choice(weighted_values)
-        print(f"Random damage multiplier (R): {random_multiplier} → factor {random_multiplier / 100:.2f}")
-        return random_multiplier / 100
+
+        if is_random:
+            random_multiplier = random.choice(weighted_values)
+            print(f"Random damage multiplier (R): {random_multiplier} → factor {random_multiplier / 100:.2f}")
+            return random_multiplier / 100
+        return (sum(weighted_values) / len(weighted_values)) / 100
 
     @staticmethod
     def is_crit_hit(pokemon):
@@ -93,7 +96,7 @@ class PokemonDamageCalculator:
         """
         return round(base_damage * 0.85 * effectiveness, 2), round(base_damage * effectiveness, 2)
 
-    def calculate_damage(self, attacker, defender, move):
+    def calculate_damage(self, attacker, defender, move, random_multiplier = True):
         """
         Perform a full damage calculation from one Pokémon to another using a move.
 
@@ -150,7 +153,7 @@ class PokemonDamageCalculator:
             base_damage *= 1.5
 
         # Step 9: Apply random factor to simulate real in-game variance
-        random_factor = self.get_random_damage_multiplier()
+        random_factor = self.get_random_damage_multiplier(random_multiplier)
 
         # Step 10: Return full attack result as a dataclass
         return Attack(

@@ -1,5 +1,5 @@
 from .pokemon_dammage_calculator import PokemonDamageCalculator, Attack
-from .create_pokemon import PokemonFactory, Stats, Move, Pokemon
+from .create_pokemon import PokemonFactory, Pokemon
 
 
 class RightMoveMachine:
@@ -21,7 +21,7 @@ class RightMoveMachine:
         :param defender: The defending Pokémon.
         :return: The best attack result.
         """
-        # Initialize damage calculator beacause it is a static method
+        # Initialize damage calculator because it is a static method
         damage_calculator = PokemonDamageCalculator('data/chart.csv')
 
         # return variable to store the best attack result

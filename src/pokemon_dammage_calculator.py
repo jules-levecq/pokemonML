@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from .utils import read_csv_data
 from .create_pokemon import Pokemon
 
+
 @dataclass
 class Attack:
     """
@@ -15,8 +16,8 @@ class Attack:
         missed (bool): Indicates if the move missed.
         crit (bool): Indicates if the attack was a critical hit.
         effectiveness (float): The type effectiveness multiplier.
-        defender (Pokemon): A deep copy of the defender's state at the time of attack.
-        attacker (Pokemon): A deep copy of the attacker's state at the time of attack.
+        defender (Pokémon): A deep copy of the defender's state at the time of attack.
+        attacker (Pokémon): A deep copy of the attacker's state at the time of attack.
         move (object): A deep copy of the move used in the attack.
     """
     damage_range: tuple
@@ -28,39 +29,41 @@ class Attack:
     attacker: Pokemon
     move: object
 
+
 class PokemonDamageCalculator:
     """
     Class responsible for computing Pokémon battle damage, integrating various in-game mechanics.
-    
+
     The computation process is divided into several steps:
-    
+
     1. **Base Damage Calculation**:
        - Uses the attacking and defending Pokémon's stats, the move's power, and the attacker's level.
        - Applies the Same-Type Attack Bonus (STAB) when applicable.
-       - Considers the type effectiveness by comparing the move's element with the defender's types.
+       - Considers type effectiveness by comparing the move's element with the defender's types.
        - Returns a tuple with (base_damage, effectiveness, random_factor, damage_range), where:
             - base_damage: The computed damage before multipliers.
             - effectiveness: The multiplier due to type interactions.
             - random_factor: A random multiplier (between 0.85 and 1.00) to simulate game variability.
             - damage_range: A tuple showing the theoretical minimum and maximum damage after applying effectiveness.
-    
-    2. **Final Damage Capture**:
-       - The method `get_final_base_damage` calls the base damage calculation once and uses its result
-         to create an `Attack` object containing all details. This method is used when l’on souhaite capturer
-         l'état théorique d'une attaque (par exemple pour l'entrainement d'un modèle de deep learning), sans
-         appliquer l'interaction (c'est-à-dire sans tenir compte d'un éventuel miss).
-    
-    3. **Complete Damage Calculation**:
-       - The method `calculate_damage` simule l'attaque complète : vérification si la move touche, détection
-         d'un coup critique (qui peut ajuster les statistiques utilisées dans le calcul), et application du
-         facteur aléatoire. Le résultat est renvoyé sous forme d'un objet `Attack`.
-    
-    4. **Interaction and State Update**:
-       - Finalement, `return_interaction` applique les effets de l'attaque : réduction de la santé du défenseur
-         (si l’attaque ne rate pas) et décrémentation des PP du move utilisé. Elle retourne une capture de l’état
-         post-interaction dans un objet `Attack`.
-    
-    This modular approach allows storing exhaustive information about each attack, which is highly beneficial for deep learning analysis.
+
+    2. **Final Base Damage Snapshot**:
+       - The method `get_final_base_damage` calls the base damage computation once and uses its result
+         to build an `Attack` object with all theoretical details. This method is useful when
+         capturing the theoretical output of a move (e.g. for training a deep learning model)
+         without applying combat effects such as misses.
+
+    3. **Full Damage Calculation**:
+       - The method `calculate_damage` simulates the complete attack: checks if the move hits,
+         determines whether a critical hit occurs (which may override the usual stat modifiers),
+         and applies randomness. The result is returned as a structured `Attack` object.
+
+    4. **Interaction and State Mutation**:
+       - Finally, `return_interaction` applies the actual effects of the attack:
+         reducing the defender's HP (if the attack hits) and decrementing the move's PP.
+         It returns a post-interaction state snapshot encapsulated in an `Attack` object.
+
+    This modular approach allows you to capture comprehensive attack data,
+    which is highly valuable in the context of data analysis and deep learning.
     """
     
     def __init__(self, csv_path):
@@ -182,7 +185,7 @@ class PokemonDamageCalculator:
         """
         Compute the final base damage and return an Attack object with detailed state information.
 
-        This method calculates the theoretical damage of an attack without considering interaction effects 
+        This method calculates the theoretical damage to an attack without considering interaction effects
         (e.g. a missed attack). It calls calculate_base_damage once to obtain:
             - base_damage: Damage computed from stats and STAB.
             - effectiveness: Multiplier due to type effectiveness.
@@ -252,7 +255,7 @@ class PokemonDamageCalculator:
 
         is_crit = self.is_crit_hit(attacker)
         base_damage, effectiveness, random_factor, damage_range = self.calculate_base_damage(
-            attacker, defender, move, is_crit
+            attacker, defender, move, is_crit, random_multiplier
         )
 
         if is_crit:

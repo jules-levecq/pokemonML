@@ -21,19 +21,18 @@ class RightMoveMachine:
         :param defender: The defending Pokémon.
         :return: The best attack result.
         """
-        best_move = None
+        #return variable to store the best attack result
+        best_attack = damage_calculator.calculate_damage(attacker, defender, attacker.moves[0], None)
 
         # Initialize damage calculator beacause it is a static method
         damage_calculator = PokemonDamageCalculator('data/chart.csv')
 
-        for move in attacker.moves:
+        # Loop through all moves of the attacker except the first one
+        for move in attacker.moves[1:]:
             attack_result = damage_calculator.calculate_damage(attacker, defender, move, None)
-
-            # Check if this is the first attack or if it's better than the current best by checking the average of the damage range
-            if best_move is None or (attack_result.damage_range[0] + attack_result.damage_range[1]) / 2 > (
-                    best_move.damage_range[0] + best_move.damage_range[1]) / 2:
-                best_move = attack_result
-
-        return best_move
+            if attack_result.effective_damage > best_attack.effective_damage:
+                best_attack = attack_result
+        
+        return best_attack
 
     

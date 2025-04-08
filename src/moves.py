@@ -1,6 +1,6 @@
 class Move:
     """Class representing a Pokémon move."""
-    def __init__(self, name, element, damage, category, accuracy):
+    def __init__(self, name, element, damage, category, accuracy, pp):
         """
         Initialize a move.
         :param name: Name of the move
@@ -14,3 +14,4 @@ class Move:
         self.damage = damage
         self.damage_class = category  # "physical" or "special"
         self.accuracy = accuracy
+        self.pp = pp

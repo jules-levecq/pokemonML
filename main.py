@@ -20,21 +20,20 @@ factory.add_move_to_pokemon(pikachu, "Volt Tackle")
 factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
 
-list_attack = []
-# Calculate damage
-for i in range(50):
-    damage = damage_calculator.calculate_damage(pikachu, bulbasaur, pikachu.moves[0])
-    # Display the result
-    display_damage_result(pikachu, bulbasaur, pikachu.moves[0], damage)
-
-    # Store the damage in a list
-    list_attack.append(damage)
-
-    # Si c'est un coup critique, on arrête la boucle
-    if damage.crit:
-        print("Critical hit achieved! Ending simulation. At the step", i + 1)
-        break
-
 #find the best move
 best_attack = RightMoveMachine.find_best_move(pikachu, bulbasaur)
 display_damage_result(pikachu, bulbasaur, best_attack.move, best_attack)
+
+
+
+#display the pp of best attack move
+print(f"PP of the best attack move: {best_attack.move.pp}")
+#display the health of bulbasaur before the attack
+print(f"Bulbasaur's health before the attack: {bulbasaur.current_stats.health}")
+#do the attack
+best_attack = damage_calculator.return_interaction(pikachu, bulbasaur, best_attack.move, random_multiplier=False)
+display_damage_result(pikachu, bulbasaur, best_attack.move, best_attack)
+#display the pp of best attack move
+print(f"PP of the best attack move: {best_attack.move.pp}")
+#display the health of bulbasaur after the attack
+print(f"Bulbasaur's health after the attack: {bulbasaur.current_stats.health}")

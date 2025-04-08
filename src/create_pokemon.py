@@ -29,6 +29,19 @@ class Pokemon:
             self.moves.append(move)
         else:
             raise Exception(f"{self.name} cannot have more than 4 moves.")
+        
+    def take_damage(self, damage):
+        """Apply damage to the Pokémon's current stats."""
+        self.current_stats.health -= damage
+        if self.current_stats.health < 0:
+            self.current_stats.health = 0
+
+    def heal(self, amount):
+        """Heal the Pokémon by a certain amount."""
+        self.current_stats.health += amount
+        if self.current_stats.health > self.base_stats.health:
+            self.current_stats.health = self.base_stats.health
+        
 
 
 class PokemonFactory:
@@ -79,7 +92,8 @@ class PokemonFactory:
             element=move_row['type'],
             damage=int(move_row['power']),
             category=move_row['damage_class'].lower(),
-            accuracy=int(move_row['accuracy'])
+            accuracy=int(move_row['accuracy']),
+            pp=int(move_row['pp'])
         )
         return move
 

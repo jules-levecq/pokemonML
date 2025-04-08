@@ -25,11 +25,11 @@ class RightMoveMachine:
         damage_calculator = PokemonDamageCalculator('data/chart.csv')
 
         # return variable to store the best attack result
-        best_attack = damage_calculator.calculate_damage(attacker, defender, attacker.moves[0], None)
+        best_attack = damage_calculator.get_final_base_damage(attacker, defender, attacker.moves[0], False, False)
 
         # Loop through all moves of the attacker except the first one
         for move in attacker.moves[1:]:
-            attack_result = damage_calculator.calculate_damage(attacker, defender, move, None)
+            attack_result = damage_calculator.get_final_base_damage(attacker, defender, move, False, False)
             if attack_result.effective_damage > best_attack.effective_damage:
                 best_attack = attack_result
         

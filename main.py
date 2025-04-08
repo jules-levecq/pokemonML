@@ -22,7 +22,7 @@ factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
 list_attack = []
 # Calculate damage
-for i in range(50) :
+for i in range(50):
     damage = damage_calculator.calculate_damage(pikachu, bulbasaur, pikachu.moves[0])
     # Display the result
     display_damage_result(pikachu, bulbasaur, pikachu.moves[0], damage)

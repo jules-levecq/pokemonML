@@ -15,3 +15,21 @@ class Move:
         self.damage_class = category  # "physical" or "special"
         self.accuracy = accuracy
         self.pp = pp
+
+    # --- Factory ---
+
+    @classmethod
+    def from_csv_row(cls, row):
+        """
+        Create a Move object from a CSV row (as a pandas Series).
+        :param row: Pandas Series with move data
+        :return: Move instance
+        """
+        return cls(
+            name=row['name'],
+            element=row['type'],
+            damage=int(row['power']),
+            category=row['damage_class'].lower(),
+            accuracy=int(row['accuracy']),
+            pp=int(row['pp'])
+        )

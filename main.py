@@ -9,8 +9,8 @@ factory = PokemonFactory('data/pokemon.csv', 'data/moves.csv')
 damage_calculator = PokemonDamageCalculator('data/chart.csv')
 
 # Create Pokémon
-pikachu = factory.create_pokemon("Pikachu")
-bulbasaur = factory.create_pokemon("Bulbasaur")
+pikachu = factory.create_pokemon("Pikachu", 50)
+bulbasaur = factory.create_pokemon("Bulbasaur", 50)
 
 # Add moves
 factory.add_move_to_pokemon(pikachu, "Thunder")

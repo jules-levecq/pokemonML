@@ -6,20 +6,7 @@ tabAccuracyEvasion = [0.33, 0.38, 0.43, 0.5, 0.6, 0.75, 1, 1.33, 1.67, 2, 2.33, 
 
 
 class IndividualValues:
-    """
-    Class representing a Pokémon's Individual Values (IVs).
-
-    IVs are innate values that determine a Pokémon's potential in each stat.
-    By default, each stat is set to 31, the maximum possible value according to standard game mechanics.
-
-    Attributes:
-        health (int): IV for HP. Default is 31.
-        attack (int): IV for physical attack. Default is 31.
-        defense (int): IV for physical defense. Default is 31.
-        attack_spe (int): IV for special attack. Default is 31.
-        defense_spe (int): IV for special defense. Default is 31.
-        speed (int): IV for speed. Default is 31.
-    """
+    """Represents Pokémon's Individual Values (IVs), which influence each stat's potential."""
     def __init__(self, health=31, attack=31, defense=31, attack_spe=31, defense_spe=31, speed=31):
         self.health = health
         self.attack = attack
@@ -36,20 +23,7 @@ class IndividualValues:
 
 
 class EffortValues:
-    """
-    Class representing a Pokémon's Effort Values (EVs).
-
-    EVs are points gained through battle that contribute to a Pokémon's stat growth.
-    They are usually accumulated over time and are set to 0 by default.
-
-    Attributes:
-        health (int): EV for HP. Default is 0.
-        attack (int): EV for physical attack. Default is 0.
-        defense (int): EV for physical defense. Default is 0.
-        attack_spe (int): EV for special attack. Default is 0.
-        defense_spe (int): EV for special defense. Default is 0.
-        speed (int): EV for speed. Default is 0.
-    """
+    """Represents Pokémon's Effort Values (EVs), which accumulate and influence stats over time."""
     def __init__(self, health=0, attack=0, defense=0, attack_spe=0, defense_spe=0, speed=0):
         self.health = health
         self.attack = attack
@@ -67,25 +41,8 @@ class EffortValues:
 
 class Stats:
     """
-    Class representing a Pokémon's battle statistics.
-
-    This class consolidates the base stats of a Pokémon along with its Individual Values (IVs)
-    and Effort Values (EVs). These components combine to determine the final stats used in battle
-    calculations. In addition, the class includes modifiers for accuracy, evasion, and critical hit chance,
-    which can be used to simulate in-game stat adjustments.
-
-    Attributes:
-        health (int): Base HP value.
-        attack (int): Base physical attack value.
-        defense (int): Base physical defense value.
-        attack_spe (int): Base special attack value.
-        defense_spe (int): Base special defense value.
-        speed (int): Base speed value.
-        iv (IndividualValues): Instance containing individual value details.
-        ev (EffortValues): Instance containing effort value details.
-        accuracy (int): Modifier index for accuracy; default is 6 (neutral, equals a 1.0 multiplier).
-        evasion (int): Modifier index for evasion; default is 6 (neutral, equals a 1.0 multiplier).
-        critChance (int): Modifier level for critical hit chance; default is 0.
+    Represents a Pokémon's full set of battle stats, including base values,
+    IVs, EVs, and in-battle modifiers like accuracy, evasion and crit chance.
     """
 
     def __init__(self, health, attack, defense, attack_spe, defense_spe, speed, iv=None, ev=None):
@@ -95,151 +52,129 @@ class Stats:
         self.attack_spe = attack_spe
         self.defense_spe = defense_spe
         self.speed = speed
-
-        # Initialize IVs and EVs using provided values or defaults
         self.iv = iv if iv is not None else IndividualValues()
         self.ev = ev if ev is not None else EffortValues()
+        self.accuracy = 6  # Neutral value (1.0 multiplier)
+        self.evasion = 6   # Neutral value (1.0 multiplier)
+        self.critChance = 0  # Default crit stage
 
-        # Modifiers: 0–3 for crit chance, 0–12 for accuracy/evasion
-        self.accuracy = 6      # Neutral index (index 6 corresponds to x1.0)
-        self.evasion = 6       # Neutral index
-        self.critChance = 0    # Base critical hit chance
+    # --- Factory / Clone ---
 
-    # ------------------------
-    # Stats management
-    # ------------------------
+    def clone(self):
+        """Return a full copy of the Stats object."""
+        return Stats(
+            self.health, self.attack, self.defense, self.attack_spe,
+            self.defense_spe, self.speed, iv=self.iv, ev=self.ev
+        )
+
+    @classmethod
+    def from_csv_row(cls, row, level):
+        """Create a Stats object from a CSV row by calculating real stats for a given level."""
+        base_stats = cls(
+            health=int(row["HP"]),
+            attack=int(row["Attack"]),
+            defense=int(row["Defense"]),
+            attack_spe=int(row["Sp. Atk"]),
+            defense_spe=int(row["Sp. Def"]),
+            speed=int(row["Speed"])
+        )
+        return cls(
+            health=base_stats.calculate_hp(level),
+            attack=base_stats.calculate_stat("Attack", level),
+            defense=base_stats.calculate_stat("Defense", level),
+            attack_spe=base_stats.calculate_stat("Sp. Atk", level),
+            defense_spe=base_stats.calculate_stat("Sp. Def", level),
+            speed=base_stats.calculate_stat("Speed", level)
+        )
+
+    # --- Calculations ---
 
     def calculate_hp(self, level: int) -> int:
-        """
-        Calculate the final HP stat based on the formula:
-
-            HP = floor(((IV + 2 * Base + (EV / 4)) * Level) / 100) + Level + 10
-
-        Args:
-            level (int): The current level of the Pokémon.
-
-        Returns:
-            int: The final HP value, after rounding down.
-        """
-        # IV, Base, and EV for HP
+        """Compute HP based on level, base stat, IV and EV."""
         iv = self.iv.health
         base = self.health
         ev = self.ev.health
-
         return math.floor(((iv + 2 * base + (ev // 4)) * level) / 100) + level + 10
 
     def calculate_stat(self, stat_name: str, level: int, nature: float = 1.0) -> int:
-        """
-        Calculate the final value of a given stat (Attack, Defense, Sp. Atk, Sp. Def, Speed)
-        using the standard Pokémon formula:
-
-            Stat = floor( ( floor(((IV + 2 * Base + (EV / 4)) * Level) / 100) + 5 ) * Nature )
-
-        Args:
-            stat_name (str): The name of the stat to calculate (one of "Attack", "Defense",
-                             "Sp. Atk", "Sp. Def", "Speed").
-            level (int): The current level of the Pokémon.
-            nature (float): Nature multiplier (e.g., 1.1 for beneficial nature, 0.9 for hindering).
-
-        Returns:
-            int: The final stat value, after rounding down.
-        """
-        # Retrieve the base stat, IV, and EV for the requested stat_name
+        """Compute a regular stat (Attack, Defense...) with optional nature modifier."""
         if stat_name == "Attack":
-            base = self.attack
-            iv = self.iv.attack
-            ev = self.ev.attack
+            base, iv, ev = self.attack, self.iv.attack, self.ev.attack
         elif stat_name == "Defense":
-            base = self.defense
-            iv = self.iv.defense
-            ev = self.ev.defense
+            base, iv, ev = self.defense, self.iv.defense, self.ev.defense
         elif stat_name == "Sp. Atk":
-            base = self.attack_spe
-            iv = self.iv.attack_spe
-            ev = self.ev.attack_spe
+            base, iv, ev = self.attack_spe, self.iv.attack_spe, self.ev.attack_spe
         elif stat_name == "Sp. Def":
-            base = self.defense_spe
-            iv = self.iv.defense_spe
-            ev = self.ev.defense_spe
+            base, iv, ev = self.defense_spe, self.iv.defense_spe, self.ev.defense_spe
         elif stat_name == "Speed":
-            base = self.speed
-            iv = self.iv.speed
-            ev = self.ev.speed
+            base, iv, ev = self.speed, self.iv.speed, self.ev.speed
         else:
             raise ValueError(f"Invalid stat_name: {stat_name}")
-
-        # Compute the raw stat part (floor(...) + 5)
         raw_stat = math.floor(((iv + 2 * base + (ev // 4)) * level) / 100) + 5
+        return math.floor(raw_stat * nature)
 
-        # Apply the nature multiplier, then floor again
-        final_stat = math.floor(raw_stat * nature)
-        return final_stat
-
-    # ------------------------
-    # Critical hit management
-    # ------------------------
+    # --- Crit Management ---
 
     def increase_crit_chance(self):
-        """Increase the critical hit chance level by 1 (max is 3)."""
+        """Raise the crit stage by 1, up to 3."""
         if self.critChance < 3:
-            return self.critChance + 1
-        print("Critical hit chance is already at its maximum!")
+            self.critChance += 1
+        else:
+            print("Critical hit chance is already at its maximum!")
 
     def decrease_crit_chance(self):
-        """Decrease the critical hit chance level by 1 (min is 0)."""
+        """Lower the crit stage by 1, down to 0."""
         if self.critChance > 0:
-            return self.critChance - 1
-        print("Critical hit chance cannot go lower!")
+            self.critChance -= 1
+        else:
+            print("Critical hit chance cannot go lower!")
 
     def get_crit_chance(self):
-        """
-        Get the actual critical hit chance value based on the critChance index.
-        :return: Float between 0.0625 and 1.0
-        """
+        """Return the current critical hit probability."""
         return tabCritChance[self.critChance]
 
-    # ------------------------
-    # Accuracy management
-    # ------------------------
+    # --- Accuracy Management ---
 
     def increase_accuracy(self):
-        """Increase the accuracy level (max index is 12)."""
+        """Raise accuracy stage (max 12)."""
         if self.accuracy < 12:
-            return self.accuracy + 1
-        print("Accuracy is already at its maximum!")
+            self.accuracy += 1
+        else:
+            print("Accuracy is already at its maximum!")
 
     def decrease_accuracy(self):
-        """Decrease the accuracy level (min index is 0)."""
+        """Lower accuracy stage (min 0)."""
         if self.accuracy > 0:
-            return self.accuracy - 1
-        print("Accuracy cannot go lower!")
+            self.accuracy -= 1
+        else:
+            print("Accuracy cannot go lower!")
 
     def get_accuracy(self):
-        """
-        Get the current accuracy multiplier based on the accuracy index.
-        :return: Float between 0.33 and 3.0
-        """
+        """Get the current accuracy multiplier."""
         return tabAccuracyEvasion[self.accuracy]
 
-    # ------------------------
-    # Evasion management
-    # ------------------------
+    # --- Evasion Management ---
 
     def increase_evasion(self):
-        """Increase the evasion level (max index is 12)."""
+        """Raise evasion stage (max 12)."""
         if self.evasion < 12:
-            return self.evasion + 1
-        print("Evasion is already at its maximum!")
+            self.evasion += 1
+        else:
+            print("Evasion is already at its maximum!")
 
     def decrease_evasion(self):
-        """Decrease the evasion level (min index is 0)."""
+        """Lower evasion stage (min 0)."""
         if self.evasion > 0:
-            return self.evasion - 1
-        print("Evasion cannot go lower!")
+            self.evasion -= 1
+        else:
+            print("Evasion cannot go lower!")
 
     def get_evasion(self):
-        """
-        Get the current evasion multiplier based on the evasion index.
-        :return: Float between 0.33 and 3.0
-        """
+        """Get the current evasion multiplier."""
         return tabAccuracyEvasion[self.evasion]
+
+    # --- Debug ---
+
+    def __repr__(self):
+        return (f"Stats(HP={self.health}, ATK={self.attack}, DEF={self.defense}, "
+                f"SATK={self.attack_spe}, SDEF={self.defense_spe}, SPD={self.speed})")

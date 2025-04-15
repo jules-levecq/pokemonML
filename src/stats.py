@@ -3,25 +3,100 @@ tabCritChance = [0.0625, 0.125, 0.5, 1.0]
 tabAccuracyEvasion = [0.33, 0.38, 0.43, 0.5, 0.6, 0.75, 1, 1.33, 1.67, 2, 2.33, 2.67, 3]
 
 
-class Stats:
-    """Class representing a Pokémon's combat statistics, including modifiers."""
+class IndividualValues:
+    """
+    Class representing a Pokémon's Individual Values (IVs).
 
-    def __init__(self, health, attack, defense, attack_spe, defense_spe, speed):
-        """
-        Initialize the stats of a Pokémon.
-        :param health: HP value
-        :param attack: Physical attack value
-        :param defense: Physical defense value
-        :param attack_spe: Special attack value
-        :param defense_spe: Special defense value
-        :param speed: Speed value
-        """
+    IVs are innate values that determine a Pokémon's potential in each stat.
+    By default, each stat is set to 31, the maximum possible value according to standard game mechanics.
+
+    Attributes:
+        health (int): IV for HP. Default is 31.
+        attack (int): IV for physical attack. Default is 31.
+        defense (int): IV for physical defense. Default is 31.
+        special_attack (int): IV for special attack. Default is 31.
+        special_defense (int): IV for special defense. Default is 31.
+        speed (int): IV for speed. Default is 31.
+    """
+    def __init__(self, health=31, attack=31, defense=31, special_attack=31, special_defense=31, speed=31):
+        self.health = health
+        self.attack = attack
+        self.defense = defense
+        self.special_attack = special_attack
+        self.special_defense = special_defense
+        self.speed = speed
+
+    def __repr__(self):
+        return (
+            f"IndividualValues(HP={self.health}, ATK={self.attack}, DEF={self.defense}, "
+            f"SATK={self.special_attack}, SDEF={self.special_defense}, SPD={self.speed})"
+        )
+
+
+class EffortValues:
+    """
+    Class representing a Pokémon's Effort Values (EVs).
+
+    EVs are points gained through battle that contribute to a Pokémon's stat growth.
+    They are usually accumulated over time and are set to 0 by default.
+
+    Attributes:
+        health (int): EV for HP. Default is 0.
+        attack (int): EV for physical attack. Default is 0.
+        defense (int): EV for physical defense. Default is 0.
+        special_attack (int): EV for special attack. Default is 0.
+        special_defense (int): EV for special defense. Default is 0.
+        speed (int): EV for speed. Default is 0.
+    """
+    def __init__(self, health=0, attack=0, defense=0, special_attack=0, special_defense=0, speed=0):
+        self.health = health
+        self.attack = attack
+        self.defense = defense
+        self.special_attack = special_attack
+        self.special_defense = special_defense
+        self.speed = speed
+
+    def __repr__(self):
+        return (
+            f"EffortValues(HP={self.health}, ATK={self.attack}, DEF={self.defense}, "
+            f"SATK={self.special_attack}, SDEF={self.special_defense}, SPD={self.speed})"
+        )
+
+
+class Stats:
+    """
+    Class representing a Pokémon's battle statistics.
+
+    This class consolidates the base stats of a Pokémon along with its Individual Values (IVs)
+    and Effort Values (EVs). These components combine to determine the final stats used in battle
+    calculations. In addition, the class includes modifiers for accuracy, evasion, and critical hit chance,
+    which can be used to simulate in-game stat adjustments.
+
+    Attributes:
+        health (int): Base HP value.
+        attack (int): Base physical attack value.
+        defense (int): Base physical defense value.
+        attack_spe (int): Base special attack value.
+        defense_spe (int): Base special defense value.
+        speed (int): Base speed value.
+        iv (IndividualValues): Instance containing individual value details.
+        ev (EffortValues): Instance containing effort value details.
+        accuracy (int): Modifier index for accuracy; default is 6 (neutral, equals a 1.0 multiplier).
+        evasion (int): Modifier index for evasion; default is 6 (neutral, equals a 1.0 multiplier).
+        critChance (int): Modifier level for critical hit chance; default is 0.
+    """
+
+    def __init__(self, health, attack, defense, attack_spe, defense_spe, speed, iv=None, ev=None):
         self.health = health
         self.attack = attack
         self.defense = defense
         self.attack_spe = attack_spe
         self.defense_spe = defense_spe
         self.speed = speed
+
+        # Initialize IVs and EVs using provided values or defaults
+        self.iv = iv if iv is not None else IndividualValues()
+        self.ev = ev if ev is not None else EffortValues()
 
         # Modifiers: 0–3 for crit chance, 0–12 for accuracy/evasion
         self.accuracy = 6      # Neutral state (index 6 corresponds to x1.0)

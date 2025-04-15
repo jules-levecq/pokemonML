@@ -1,3 +1,5 @@
+import math
+
 # Tables used to calculate critical hit chance and accuracy/evasion modifiers
 tabCritChance = [0.0625, 0.125, 0.5, 1.0]
 tabAccuracyEvasion = [0.33, 0.38, 0.43, 0.5, 0.6, 0.75, 1, 1.33, 1.67, 2, 2.33, 2.67, 3]
@@ -99,9 +101,79 @@ class Stats:
         self.ev = ev if ev is not None else EffortValues()
 
         # Modifiers: 0–3 for crit chance, 0–12 for accuracy/evasion
-        self.accuracy = 6      # Neutral state (index 6 corresponds to x1.0)
-        self.evasion = 6       # Neutral state
+        self.accuracy = 6      # Neutral index (index 6 corresponds to x1.0)
+        self.evasion = 6       # Neutral index
         self.critChance = 0    # Base critical hit chance
+
+    # ------------------------
+    # Calculate Stats management
+    # ------------------------
+
+    def calculate_hp(self, level: int) -> int:
+        """
+        Calculate the final HP stat based on the formula:
+
+            HP = floor(((IV + 2 * Base + (EV / 4)) * Level) / 100) + Level + 10
+
+        Args:
+            level (int): The current level of the Pokémon.
+
+        Returns:
+            int: The final HP value, after rounding down.
+        """
+        # IV, Base, and EV for HP
+        iv = self.iv.health
+        base = self.health
+        ev = self.ev.health
+
+        return math.floor(((iv + 2 * base + (ev // 4)) * level) / 100) + level + 10
+
+    def calculate_stat(self, stat_name: str, level: int, nature: float = 1.0) -> int:
+        """
+        Calculate the final value of a given stat (Attack, Defense, Sp. Atk, Sp. Def, Speed)
+        using the standard Pokémon formula:
+
+            Stat = floor( ( floor(((IV + 2 * Base + (EV / 4)) * Level) / 100) + 5 ) * Nature )
+
+        Args:
+            stat_name (str): The name of the stat to calculate (one of "attack", "defense",
+                             "special_attack", "special_defense", "speed").
+            level (int): The current level of the Pokémon.
+            nature (float): Nature multiplier (e.g., 1.1 for beneficial nature, 0.9 for hindering).
+
+        Returns:
+            int: The final stat value, after rounding down.
+        """
+        # Retrieve the base stat, IV, and EV for the requested stat_name
+        if stat_name == "attack":
+            base = self.attack
+            iv = self.iv.attack
+            ev = self.ev.attack
+        elif stat_name == "defense":
+            base = self.defense
+            iv = self.iv.defense
+            ev = self.ev.defense
+        elif stat_name == "special_attack":
+            base = self.attack_spe
+            iv = self.iv.special_attack
+            ev = self.ev.special_attack
+        elif stat_name == "special_defense":
+            base = self.defense_spe
+            iv = self.iv.special_defense
+            ev = self.ev.special_defense
+        elif stat_name == "speed":
+            base = self.speed
+            iv = self.iv.speed
+            ev = self.ev.speed
+        else:
+            raise ValueError(f"Invalid stat_name: {stat_name}")
+
+        # Compute the raw stat part (floor(...) + 5)
+        raw_stat = math.floor(((iv + 2 * base + (ev // 4)) * level) / 100) + 5
+
+        # Apply the nature multiplier, then floor again
+        final_stat = math.floor(raw_stat * nature)
+        return final_stat
 
     # ------------------------
     # Critical hit management
@@ -171,6 +243,10 @@ class Stats:
         :return: Float between 0.33 and 3.0
         """
         return tabAccuracyEvasion[self.evasion]
+
+    # ------------------------
+    # Clone Stats
+    # ------------------------
 
     def clone(self):
         """Return a copy of the Stats object."""

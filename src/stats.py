@@ -16,22 +16,22 @@ class IndividualValues:
         health (int): IV for HP. Default is 31.
         attack (int): IV for physical attack. Default is 31.
         defense (int): IV for physical defense. Default is 31.
-        special_attack (int): IV for special attack. Default is 31.
-        special_defense (int): IV for special defense. Default is 31.
+        attack_spe (int): IV for special attack. Default is 31.
+        defense_spe (int): IV for special defense. Default is 31.
         speed (int): IV for speed. Default is 31.
     """
-    def __init__(self, health=31, attack=31, defense=31, special_attack=31, special_defense=31, speed=31):
+    def __init__(self, health=31, attack=31, defense=31, attack_spe=31, defense_spe=31, speed=31):
         self.health = health
         self.attack = attack
         self.defense = defense
-        self.special_attack = special_attack
-        self.special_defense = special_defense
+        self.attack_spe = attack_spe
+        self.defense_spe = defense_spe
         self.speed = speed
 
     def __repr__(self):
         return (
             f"IndividualValues(HP={self.health}, ATK={self.attack}, DEF={self.defense}, "
-            f"SATK={self.special_attack}, SDEF={self.special_defense}, SPD={self.speed})"
+            f"SATK={self.attack_spe}, SDEF={self.defense_spe}, SPD={self.speed})"
         )
 
 
@@ -46,22 +46,22 @@ class EffortValues:
         health (int): EV for HP. Default is 0.
         attack (int): EV for physical attack. Default is 0.
         defense (int): EV for physical defense. Default is 0.
-        special_attack (int): EV for special attack. Default is 0.
-        special_defense (int): EV for special defense. Default is 0.
+        attack_spe (int): EV for special attack. Default is 0.
+        defense_spe (int): EV for special defense. Default is 0.
         speed (int): EV for speed. Default is 0.
     """
-    def __init__(self, health=0, attack=0, defense=0, special_attack=0, special_defense=0, speed=0):
+    def __init__(self, health=0, attack=0, defense=0, attack_spe=0, defense_spe=0, speed=0):
         self.health = health
         self.attack = attack
         self.defense = defense
-        self.special_attack = special_attack
-        self.special_defense = special_defense
+        self.attack_spe = attack_spe
+        self.defense_spe = defense_spe
         self.speed = speed
 
     def __repr__(self):
         return (
             f"EffortValues(HP={self.health}, ATK={self.attack}, DEF={self.defense}, "
-            f"SATK={self.special_attack}, SDEF={self.special_defense}, SPD={self.speed})"
+            f"SATK={self.attack_spe}, SDEF={self.defense_spe}, SPD={self.speed})"
         )
 
 
@@ -106,7 +106,7 @@ class Stats:
         self.critChance = 0    # Base critical hit chance
 
     # ------------------------
-    # Calculate Stats management
+    # Stats management
     # ------------------------
 
     def calculate_hp(self, level: int) -> int:
@@ -136,8 +136,8 @@ class Stats:
             Stat = floor( ( floor(((IV + 2 * Base + (EV / 4)) * Level) / 100) + 5 ) * Nature )
 
         Args:
-            stat_name (str): The name of the stat to calculate (one of "attack", "defense",
-                             "special_attack", "special_defense", "speed").
+            stat_name (str): The name of the stat to calculate (one of "Attack", "Defense",
+                             "Sp. Atk", "Sp. Def", "Speed").
             level (int): The current level of the Pokémon.
             nature (float): Nature multiplier (e.g., 1.1 for beneficial nature, 0.9 for hindering).
 
@@ -145,23 +145,23 @@ class Stats:
             int: The final stat value, after rounding down.
         """
         # Retrieve the base stat, IV, and EV for the requested stat_name
-        if stat_name == "attack":
+        if stat_name == "Attack":
             base = self.attack
             iv = self.iv.attack
             ev = self.ev.attack
-        elif stat_name == "defense":
+        elif stat_name == "Defense":
             base = self.defense
             iv = self.iv.defense
             ev = self.ev.defense
-        elif stat_name == "special_attack":
+        elif stat_name == "Sp. Atk":
             base = self.attack_spe
-            iv = self.iv.special_attack
-            ev = self.ev.special_attack
-        elif stat_name == "special_defense":
+            iv = self.iv.attack_spe
+            ev = self.ev.attack_spe
+        elif stat_name == "Sp. Def":
             base = self.defense_spe
-            iv = self.iv.special_defense
-            ev = self.ev.special_defense
-        elif stat_name == "speed":
+            iv = self.iv.defense_spe
+            ev = self.ev.defense_spe
+        elif stat_name == "Speed":
             base = self.speed
             iv = self.iv.speed
             ev = self.ev.speed
@@ -243,14 +243,3 @@ class Stats:
         :return: Float between 0.33 and 3.0
         """
         return tabAccuracyEvasion[self.evasion]
-
-    # ------------------------
-    # Clone Stats
-    # ------------------------
-
-    def clone(self):
-        """Return a copy of the Stats object."""
-        return Stats(
-            self.health, self.attack, self.defense,
-            self.attack_spe, self.defense_spe, self.speed
-        )

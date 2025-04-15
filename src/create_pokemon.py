@@ -1,7 +1,8 @@
 import pandas as pd
 from .utils import read_csv_data
-from .stats import Stats
+from .stats import Stats, IndividualValues, EffortValues
 from .moves import Move
+from copy import deepcopy
 
 
 class Pokemon:
@@ -17,7 +18,7 @@ class Pokemon:
         """
         self.name = name
         self.base_stats = stats
-        self.current_stats = stats.clone()
+        self.current_stats = deepcopy(stats)
         self.type1 = type1
         self.type2 = type2
         self.level = level
@@ -41,7 +42,6 @@ class Pokemon:
         self.current_stats.health += amount
         if self.current_stats.health > self.base_stats.health:
             self.current_stats.health = self.base_stats.health
-        
 
 
 class PokemonFactory:
@@ -71,6 +71,7 @@ class PokemonFactory:
             speed=int(pokemon_row['Speed'])
         )
 
+        # Create the Pokémon using the raw stats from CSV
         pokemon = Pokemon(
             name=name,
             stats=stats,
@@ -78,6 +79,20 @@ class PokemonFactory:
             type2=pokemon_row['Type 2'] if pd.notnull(pokemon_row['Type 2']) else None,
             level=50
         )
+
+        # Calculate final Pokémon stats using the formulas
+        reel_stats = Stats(
+            health=stats.calculate_hp(pokemon.level),
+            attack=stats.calculate_stat("Attack", pokemon.level),
+            defense=stats.calculate_stat("Defense", pokemon.level),
+            attack_spe=stats.calculate_stat("Sp. Atk", pokemon.level),
+            defense_spe=stats.calculate_stat("Sp. Def", pokemon.level),
+            speed=stats.calculate_stat("Speed", pokemon.level),
+        )
+
+        pokemon.base_stats = reel_stats
+        pokemon.current_stats = deepcopy(reel_stats)
+
         return pokemon
 
     def create_move(self, name: str):

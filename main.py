@@ -19,21 +19,18 @@ factory.add_move_to_pokemon(pikachu, "Iron Tail")
 factory.add_move_to_pokemon(pikachu, "Volt Tackle")
 factory.add_move_to_pokemon(bulbasaur, "Vine Whip")
 
-
-#find the best move
+# Find the best move
 best_attack = RightMoveMachine.find_best_move(pikachu, bulbasaur)
 display_damage_result(pikachu, bulbasaur, best_attack.move, best_attack)
 
-
-
-#display the pp of best attack move
+# Display the pp of best attack move
 print(f"PP of the best attack move: {best_attack.move.pp}")
-#display the health of bulbasaur before the attack
+# Display the health of bulbasaur before the attack
 print(f"Bulbasaur's health before the attack: {bulbasaur.current_stats.health}")
-#do the attack
+# Do the attack
 best_attack = damage_calculator.return_interaction(pikachu, bulbasaur, best_attack.move, random_multiplier=False)
 display_damage_result(pikachu, bulbasaur, best_attack.move, best_attack)
-#display the pp of best attack move
+# Display the pp of best attack move
 print(f"PP of the best attack move: {best_attack.move.pp}")
-#display the health of bulbasaur after the attack
-print(f"Bulbasaur's health after the attack: {bulbasaur.current_stats.health}")
+# Display the health of bulbasaur after the attack
+print(f"Bulbasaur's health after the attack: {round(bulbasaur.current_stats.health, 2)}")

@@ -21,7 +21,7 @@ def display_turn_summary(attacker: Pokemon, defender: Pokemon, predicted_attack:
     print("Pre-Turn Prediction")
     print("-" * 60)
     print(f"Expected best move: {predicted_attack.move.name} (PP: {predicted_attack.move.pp})")
-    print(f"→ Estimated Damage: {predicted_attack.effective_damage:.2f}")
+    print(f"→ Estimated Damage: {predicted_attack.effective_damage:}")
     print(f"→ Effectiveness: x{predicted_attack.effectiveness:.2f}")
     print("=" * 60)
 
@@ -31,7 +31,7 @@ def display_turn_summary(attacker: Pokemon, defender: Pokemon, predicted_attack:
     if executed_attack.missed:
         print("→ The move missed!")
     else:
-        print(f"→ Deals {executed_attack.effective_damage:.2f} damage to {defender.name}")
+        print(f"→ Deals {executed_attack.effective_damage:} damage to {defender.name}")
         if executed_attack.crit:
             print("→ It's a critical hit!")
         print(f"→ Effectiveness: x{executed_attack.effectiveness:.2f}")

@@ -24,15 +24,39 @@ def read_csv_data(csv_path: str) -> pd.DataFrame:
     return df
 
 
-def load_natures(csv_path):
+def load_natures(csv_path: str) -> dict:
     """
-    Charge les natures depuis un fichier CSV et retourne un dictionnaire.
+    Load Pokémon natures from a CSV file and return them as a dictionary.
 
-    Le dictionnaire aura pour clés les noms de nature et comme valeur un autre
-    dictionnaire qui associe chaque stat à son multiplicateur.
+    Each nature defines stat modifiers that increase or decrease specific stats
+    (e.g., Attack, Defense, Speed) during stat calculation. This function parses
+    the nature definitions and returns a nested dictionary where each key is the
+    name of a nature, and the corresponding value is a dictionary mapping each
+    affected stat to its multiplier.
+
+    The expected CSV structure should include the following columns:
+        - "Nature"     : Name of the nature (e.g., "Adamant", "Modest", etc.)
+        - "Attack"     : Multiplier for Attack (e.g., 1.1, 0.9, or 1.0)
+        - "Defense"    : Multiplier for Defense
+        - "Sp. Atk"    : Multiplier for Special Attack
+        - "Sp. Def"    : Multiplier for Special Defense
+        - "Speed"      : Multiplier for Speed
+
+    Example return format:
+    {
+        "Adamant": {"Attack": 1.1, "Defense": 1.0, "Sp. Atk": 0.9, "Sp. Def": 1.0, "Speed": 1.0},
+        ...
+    }
+
+    Args:
+        csv_path (str): Path to the CSV file containing nature definitions.
+
+    Returns:
+        dict: A dictionary where keys are nature names and values are dictionaries of stat multipliers.
     """
     df = pd.read_csv(csv_path)
     natures = {}
+
     for _, row in df.iterrows():
         nature_name = row["Nature"]
         natures[nature_name] = {
@@ -42,4 +66,5 @@ def load_natures(csv_path):
             "Sp. Def": row["Sp. Def"],
             "Speed": row["Speed"]
         }
+
     return natures

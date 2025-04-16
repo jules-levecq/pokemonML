@@ -169,7 +169,6 @@ class Stats:
         Args:
             stat_name (str): One of 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'.
             level (int): Pokémon's level.
-            natures_dict (dict): Nature modifier (default: 1.0 = neutral).
 
         Returns:
             int: Final computed stat value.

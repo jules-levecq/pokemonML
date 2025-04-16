@@ -146,7 +146,7 @@ class PokemonDamageCalculator:
         Returns:
             tuple: (min_damage, max_damage)
         """
-        return round(base_damage * 0.85 * effectiveness, 2), round(base_damage * effectiveness, 2)
+        return int(base_damage * 0.85 * effectiveness), int(base_damage * effectiveness)
 
     @staticmethod
     def _clone_battle_state(attacker, defender, move):
@@ -309,7 +309,7 @@ class PokemonDamageCalculator:
         if not damage_result.missed:
             defender.take_damage(damage_result.effective_damage)
             if self.verbose:
-                print(f"{attacker.name} dealt {damage_result.effective_damage:.2f} to {defender.name}")
+                print(f"{attacker.name} dealt {damage_result.effective_damage:} to {defender.name}")
 
         for m in attacker.moves:
             if m.name == move.name:

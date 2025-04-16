@@ -68,7 +68,6 @@ class RightMoveMachine:
 
         return best_attack
 
-
     def find_best_move_name(self, attacker: Pokemon, defender: Pokemon) -> str:
         """
         Return only the name of the best move (most effective), rather than the full object.

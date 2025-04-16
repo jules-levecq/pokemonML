@@ -1,5 +1,5 @@
 import torch
 
-print("✅ PyTorch installé !")
+print("PyTorch installed !")
 print("Version :", torch.__version__)
-print("GPU disponible :", torch.cuda.is_available())
+print("GPU available :", torch.cuda.is_available())

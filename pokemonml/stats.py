@@ -1,4 +1,5 @@
 import math
+from .utils import load_natures
 
 # Critical hit chance by stage level (index 0 = base, 3 = max boost)
 tabCritChance = [0.0625, 0.125, 0.5, 1.0]
@@ -84,15 +85,20 @@ class Stats:
         critChance (int): Stage of crit chance (0–3).
     """
 
-    def __init__(self, health, attack, defense, attack_spe, defense_spe, speed, iv=None, ev=None):
+    def __init__(self, health, attack, defense, attack_spe, defense_spe, speed, nature="Hardy", iv=None, ev=None):
         self.health = health
         self.attack = attack
         self.defense = defense
         self.attack_spe = attack_spe
         self.defense_spe = defense_spe
         self.speed = speed
+
+        self.nature = nature
+        self.nature_dict = load_natures("data/natures.csv")
+
         self.iv = iv if iv is not None else IndividualValues()
         self.ev = ev if ev is not None else EffortValues()
+
         self.accuracy = 6
         self.evasion = 6
         self.critChance = 0
@@ -109,7 +115,8 @@ class Stats:
         return Stats(
             self.health, self.attack, self.defense,
             self.attack_spe, self.defense_spe, self.speed,
-            iv=self.iv, ev=self.ev
+            iv=self.iv, ev=self.ev,
+            nature=self.nature
         )
 
     @classmethod
@@ -155,14 +162,14 @@ class Stats:
         ev = self.ev.health
         return math.floor(((iv + 2 * base + (ev // 4)) * level) / 100) + level + 10
 
-    def calculate_stat(self, stat_name: str, level: int, nature: float = 1.0) -> int:
+    def calculate_stat(self, stat_name: str, level: int) -> int:
         """
         Calculate a stat value at a given level, optionally adjusted by nature.
 
         Args:
             stat_name (str): One of 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'.
             level (int): Pokémon's level.
-            nature (float): Nature modifier (default: 1.0 = neutral).
+            natures_dict (dict): Nature modifier (default: 1.0 = neutral).
 
         Returns:
             int: Final computed stat value.
@@ -181,6 +188,8 @@ class Stats:
             raise ValueError(f"Invalid stat_name: {stat_name}")
 
         raw = math.floor(((iv + 2 * base + (ev // 4)) * level) / 100) + 5
+        nature = self.nature_dict.get(self.nature, {}).get(stat_name, 1.0)
+
         return math.floor(raw * nature)
 
     # --- Critical Hit Logic ---

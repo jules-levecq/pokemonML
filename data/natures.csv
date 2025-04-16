@@ -1,26 +1,27 @@
-Nature,Increases,Decreases
-Adamant,Attack,Sp. Atk
-Bashful,Sp. Atk,Sp. Atk
-Bold,Defense,Attack
-Brave,Attack,Speed
-Calm,Sp. Def,Attack
-Careful,Sp. Def,Sp. Atk
-Docile,Defense,Defense
-Gentle,Sp. Def,Defense
-Hardy,Attack,Attack
-Hasty,Speed,Defense
-Impish,Defense,Sp. Atk
-Jolly,Speed,Sp. Atk
-Lax,Defense,Sp. Def
-Lonely,Attack,Defense
-Mild,Sp. Atk,Defense
-Modest,Sp. Atk,Attack
-Naive,Speed,Sp. Def
-Naughty,Attack,Sp. Def
-Quiet,Sp. Atk,Speed
-Quirky,Sp. Def,Sp. Def
-Rash,Sp. Atk,Sp. Def
-Relaxed,Defense,Speed
-Sassy,Sp. Def,Speed
-Serious,Speed,Speed
-Timid,Speed,Attack
+Nature,Attack,Defense,Sp. Atk,Sp. Def,Speed
+Adamant,1.1,1.0,0.9,1.0,1.0
+Bashful,1.0,1.0,1.0,1.0,1.0
+Bold,0.9,1.1,1.0,1.0,1.0
+Brave,1.1,1.0,1.0,1.0,0.9
+Calm,0.9,1.0,1.0,1.1,1.0
+Careful,1.0,1.0,0.9,1.1,1.0
+Docile,1.0,1.0,1.0,1.0,1.0
+Gentle,1.0,0.9,1.0,1.1,1.0
+Hardy,1.0,1.0,1.0,1.0,1.0
+Hasty,1.0,0.9,1.0,1.0,1.1
+Impish,1.0,1.1,0.9,1.0,1.0
+Jolly,1.0,1.0,0.9,1.0,1.1
+Lax,1.0,1.1,1.0,0.9,1.0
+Lonely,1.1,0.9,1.0,1.0,1.0
+Mild,1.0,0.9,1.1,1.0,1.0
+Modest,0.9,1.0,1.1,1.0,1.0
+Naive,1.0,1.0,1.0,0.9,1.1
+Naughty,1.1,1.0,1.0,0.9,1.0
+Quiet,1.0,1.0,1.1,1.0,0.9
+Quirky,1.0,1.0,1.0,1.0,1.0
+Rash,1.0,1.0,1.1,0.9,1.0
+Relaxed,1.0,1.1,1.0,1.0,0.9
+Sassy,1.0,1.0,1.0,1.1,0.9
+Serious,1.0,1.0,1.0,1.0,1.0
+Timid,0.9,1.0,1.0,1.0,1.1
+

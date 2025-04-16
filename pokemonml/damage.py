@@ -235,20 +235,35 @@ class PokemonDamageCalculator:
 
     def compute_theoretical_attack(self, attacker, defender, move, is_crit, random_multiplier):
         """
-        Run a theoretical calculation without actually applying effects.
-
+        Run a theoretical attack calculation without applying any real effects.
+        
+        Modified Behavior:
+        - If the lower bound of the damage range (damage_range[0]) is greater than or equal 
+        to the defender's current HP, then we set effective_damage to the defender's current HP,
+        as no more damage can be inflicted (KO is certain).
+        - Otherwise, effective_damage is set to -1, indicating that the effective damage is not fixed 
+        and should only be computed during the actual interaction.
+        
         Args:
-            attacker (Pokemon): The attacker.
-            defender (Pokemon): The target.
-            move (Move): The move to test.
-            is_crit (bool): Force critical hit or not.
-            random_multiplier (bool): Enable or disable random factor.
-
+            attacker (Pokemon): The attacking Pokémon.
+            defender (Pokemon): The defending Pokémon.
+            move (Move): The move to evaluate.
+            is_crit (bool): Force a critical hit evaluation.
+            random_multiplier (bool): Enable or disable the random damage factor.
+        
         Returns:
-            Attack: Simulated attack result object.
+            Attack: A simulated attack result object containing the computed damage range,
+                    a critical hit flag, and an effective_damage field set as described.
         """
         base_damage, effectiveness, random_factor, damage_range = self.compute_base_damage(attacker, defender, move, is_crit, random_multiplier)
-        return self._build_attack(int(base_damage * effectiveness * random_factor), is_crit, effectiveness, damage_range, False, attacker, defender, move)
+        
+        # Check if the minimum possible damage is sufficient to KO the defender.
+        if damage_range[0] >= defender.current_stats.health:
+            effective_damage = defender.current_stats.health
+        else:
+            effective_damage = -1
+        
+        return self._build_attack(effective_damage, is_crit, effectiveness, damage_range, False, attacker, defender, move)
 
     def calculate_damage(self, attacker, defender, move, random_multiplier=True):
         """

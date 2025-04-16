@@ -28,34 +28,46 @@ class RightMoveMachine:
 
     def find_best_move(self, attacker: Pokemon, defender: Pokemon) -> Attack:
         """
-        Evaluate all the attacker's available moves and return the most damaging one.
-
-        This method does not mutate any state: it is purely analytical and used for planning
-        (e.g. AI agents, pre-turn analysis, ML labeling).
-
+        Evaluate all available moves from the attacker and choose the best move based on the following criteria:
+            1. First, consider only moves where compute_theoretical_attack returns an effective_damage 
+            not equal to -1 (i.e. moves that will KO the defender).
+            2. If one or more moves meet that criterion, select the move with the best accuracy.
+            3. Otherwise, select the move that deals the highest minimum damage (using damage_range[0]).
+        
         Args:
-            attacker (Pokemon): The Pokémon performing the move.
+            attacker (Pokemon): The Pokémon executing the move.
             defender (Pokemon): The target Pokémon.
 
         Returns:
-            Attack: The most effective move wrapped in an Attack object.
-
+            Attack: The simulated attack result corresponding to the best move.
+        
         Raises:
-            ValueError: If the attacker has no moves available.
+            ValueError: If the attacker has no available moves.
         """
         if not attacker.moves:
             raise ValueError(f"{attacker.name} has no available moves.")
 
-        return max(
-            (
-                self.damage_calculator.compute_theoretical_attack(
-                    attacker, defender, move, is_crit=False,
-                    random_multiplier=self.damage_calculator.verbose
-                )
-                for move in attacker.moves
-            ),
-            key=lambda atk: atk.effective_damage
-        )
+        # Compute the theoretical attack result for each move.
+        theoretical_attacks = [
+            self.damage_calculator.compute_theoretical_attack(
+                attacker, defender, move, is_crit=False,
+                random_multiplier=self.damage_calculator.verbose
+            )
+            for move in attacker.moves
+        ]
+
+        # Filter moves that guarantee a KO (effective_damage != -1).
+        guaranteed_moves = [atk for atk in theoretical_attacks if atk.effective_damage != -1]
+
+        if guaranteed_moves:
+            # If there are moves that guarantee a KO, choose the one with the highest accuracy.
+            best_attack = max(guaranteed_moves, key=lambda atk: atk.move.accuracy)
+        else:
+            # Otherwise, choose the move with the highest minimum damage.
+            best_attack = max(theoretical_attacks, key=lambda atk: atk.damage_range[0])
+
+        return best_attack
+
 
     def find_best_move_name(self, attacker: Pokemon, defender: Pokemon) -> str:
         """

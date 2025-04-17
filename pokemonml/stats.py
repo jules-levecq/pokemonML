@@ -1,5 +1,7 @@
 import math
 from .utils import load_natures
+from .config import NATURES_CSV
+
 
 # Critical hit chance by stage level (index 0 = base, 3 = max boost)
 tabCritChance = [0.0625, 0.125, 0.5, 1.0]
@@ -94,7 +96,8 @@ class Stats:
         self.speed = speed
 
         self.nature = nature
-        self.nature_dict = load_natures("data/natures.csv")
+        # Chargement de la table des natures via la constante de config
+        self.nature_dict = load_natures(NATURES_CSV)
 
         self.iv = iv if iv is not None else IndividualValues()
         self.ev = ev if ev is not None else EffortValues()

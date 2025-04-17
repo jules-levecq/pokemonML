@@ -1,5 +1,7 @@
 from .damage import PokemonDamageCalculator, Attack
 from .create_pokemon import PokemonFactory, Pokemon
+from .config import POKEMON_CSV, MOVES_CSV, TYPE_CHART_CSV
+
 
 
 class RightMoveMachine:
@@ -15,16 +17,17 @@ class RightMoveMachine:
         damage_calculator (PokemonDamageCalculator): Core logic used to evaluate move effectiveness.
     """
 
-    def __init__(self, csv_path: str, verbose=False):
+    def __init__(self, type_chart_path: str = TYPE_CHART_CSV, verbose=False):
         """
         Initialize the move recommender system with the path to the type effectiveness CSV.
 
         Args:
-            csv_path (str): Path to the chart file defining type matchups (e.g., "data/chart.csv").
+            type_chart_path (str): Path to the chart file defining type matchups (e.g., "data/chart.csv").
             verbose (bool): If True, enables verbose output from damage calculation.
         """
-        self.factory = PokemonFactory('data/pokemon.csv', 'data/moves.csv')
-        self.damage_calculator = PokemonDamageCalculator(csv_path, verbose=verbose)
+        # On utilise maintenant les chemins centralisés dans config.py
+        self.factory = PokemonFactory(POKEMON_CSV, MOVES_CSV)
+        self.damage_calculator = PokemonDamageCalculator(type_chart_path, verbose=verbose)
 
     def find_best_move(self, attacker: Pokemon, defender: Pokemon) -> Attack:
         """

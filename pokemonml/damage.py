@@ -1,5 +1,6 @@
 import random
 import copy
+from .config import TYPE_CHART_CSV
 from dataclasses import dataclass
 from .utils import read_csv_data
 from .create_pokemon import Pokemon
@@ -58,7 +59,7 @@ class PokemonDamageCalculator:
         verbose (bool): If True, print logs and debug information during calculations.
     """
 
-    def __init__(self, csv_path, verbose=False):
+    def __init__(self, csv_path : str = TYPE_CHART_CSV, verbose=False):
         """
         Initialize the calculator and load the type chart from a CSV file.
 

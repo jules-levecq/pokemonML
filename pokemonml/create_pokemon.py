@@ -1,4 +1,5 @@
 import pandas as pd
+from .config import POKEMON_CSV, MOVES_CSV
 from .utils import read_csv_data
 from .stats import Stats
 from .moves import Move
@@ -141,7 +142,7 @@ class PokemonFactory:
         moves_data (pd.DataFrame): DataFrame containing move definitions.
     """
 
-    def __init__(self, pokemon_csv_path: str, moves_csv_path: str):
+    def __init__(self, pokemon_csv_path: str = POKEMON_CSV, moves_csv_path: str = MOVES_CSV):
         """
         Initialize the factory with Pokémon and move data loaded from CSV files.
 

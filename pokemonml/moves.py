@@ -14,7 +14,7 @@ class Move:
         pp (int): Power Points indicating how many times the move can be used in total.
     """
 
-    def __init__(self, name, element, damage, category, accuracy, pp):
+    def __init__(self, name, element, damage, category, accuracy, pp, priority=0):
         """
         Initialize a Move object with all required attributes.
 
@@ -32,6 +32,7 @@ class Move:
         self.damage_class = category  # 'physical' or 'special'
         self.accuracy = accuracy
         self.pp = pp
+        self.priority = 0  # Default priority for the move
 
     # --- Factory Method ---
 
@@ -61,5 +62,6 @@ class Move:
             damage=int(row['power']),
             category=row['damage_class'].lower(),  # normalize casing
             accuracy=int(row['accuracy']),
-            pp=int(row['pp'])
+            pp=int(row['pp']),
+            priority=int(row.get('priority', 0)),  # Default to 0 if not present
         )

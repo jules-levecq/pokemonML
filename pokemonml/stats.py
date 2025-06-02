@@ -96,7 +96,6 @@ class Stats:
         self.speed = speed
 
         self.nature = nature
-        # Chargement de la table des natures via la constante de config
         self.nature_dict = load_natures(NATURES_CSV)
 
         self.iv = iv if iv is not None else IndividualValues()

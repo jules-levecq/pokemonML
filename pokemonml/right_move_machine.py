@@ -3,7 +3,6 @@ from .create_pokemon import PokemonFactory, Pokemon
 from .config import POKEMON_CSV, MOVES_CSV, TYPE_CHART_CSV
 
 
-
 class RightMoveMachine:
     """
     AI utility class for determining the optimal move in a Pokémon battle context.

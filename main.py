@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # main.py
+import random
 
 from pokemonml.create_pokemon import PokemonFactory
 from pokemonml.damage import PokemonDamageCalculator
@@ -7,6 +8,7 @@ from pokemonml.right_move_machine import RightMoveMachine
 from pokemonml.display import display_turn_summary
 from pokemonml.config import POKEMON_CSV, MOVES_CSV, TYPE_CHART_CSV
 from pokemonml.team import Team
+from random import randint
 
 # ================================
 #  SETUP: Initialize all systems
@@ -30,15 +32,16 @@ for move_name in ["Thunder", "Quick Attack", "Iron Tail", "Volt Tackle"]:
     factory.add_move_to_pokemon(pikachu, move_name)
 
 # Create a list of pokemon to simulate teams
-team1 = Team([pikachu, charizard, snorlax], name="Player")
-team2 = Team([alakazam, gyarados, machamp], name="Bot")
+player = Team([pikachu, charizard, snorlax], name="Player")
+bot = Team([alakazam, gyarados, machamp], name="Bot")
 
-while not team1.is_defeated() and not team2.is_defeated():
-    active1 = team1.active_pokemon
-    active2 = team2.active_pokemon
-    # phase de choix d'action...
-    # team1.switch_to(2) par exemple
-
+while not player.is_defeated() and not bot.is_defeated():
+    # Affichage infos des équipes
+    player.__repr__()
+    bot.__repr__()
+    # Set des pokemons actifs
+    active1 = player.active_pokemon
+    active2 = bot.active_pokemon
 
 # ================================
 #  TURN EXECUTION

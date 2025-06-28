@@ -102,6 +102,11 @@ class Pokemon:
         """
         self.current_stats.health = min(self.base_stats.health, self.current_stats.health + amount)
 
+    def is_fainted(self):
+        if self.current_stats.health <= 0:
+            return True
+        return False
+
     # --- Utility methods ---
 
     def reset_stats(self):

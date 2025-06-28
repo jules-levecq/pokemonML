@@ -37,6 +37,12 @@ atk_name = st.selectbox(
     index=noms.index("Pikachu") if "Pikachu" in noms else 0
 )
 
+# Réinitialisation si le Pokémon change
+if st.session_state.get('prev_atk') != atk_name:
+    for i in range(1,5):
+        st.session_state.pop(f'atk{i}', None)
+    st.session_state['prev_atk'] = atk_name
+
 atk_pkm_row = pokemon_df[pokemon_df['Name'] == atk_name].iloc[0]
 atk_pkm_id = atk_pkm_row['Id']
 
@@ -83,6 +89,12 @@ def_name = st.selectbox(
     noms,
     index=noms.index("Bulbasaur") if "Bulbasaur" in noms else 0
 )
+
+# Réinitialisation si le Pokémon change
+if st.session_state.get('prev_def') != def_name:
+    for i in range(1,5):
+        st.session_state.pop(f'def{i}', None)
+    st.session_state['prev_def'] = def_name
 
 def_pkm_row = pokemon_df[pokemon_df['Name'] == def_name].iloc[0]
 def_pkm_id = def_pkm_row['Id']

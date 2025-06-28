@@ -22,26 +22,11 @@ right_move_machine = RightMoveMachine(verbose=False)
 # Create and configure Pokémon
 pikachu = factory.create_pokemon("Pikachu",   50)
 alakazam = factory.create_pokemon("Alakazam", 50)
-charizard = factory.create_pokemon("Charizard", 50)
-snorlax = factory.create_pokemon("Snorlax", 50)
-gyarados = factory.create_pokemon("Gyarados", 50)
-machamp = factory.create_pokemon("Machamp", 50)
 
 # Assign moves to Pokémon
 for move_name in ["Thunder", "Quick Attack", "Iron Tail", "Volt Tackle"]:
     factory.add_move_to_pokemon(pikachu, move_name)
-
-# Create a list of pokemon to simulate teams
-player = Team([pikachu, charizard, snorlax], name="Player")
-bot = Team([alakazam, gyarados, machamp], name="Bot")
-
-while not player.is_defeated() and not bot.is_defeated():
-    # Affichage infos des équipes
-    player.__repr__()
-    bot.__repr__()
-    # Set des pokemons actifs
-    active1 = player.active_pokemon
-    active2 = bot.active_pokemon
+factory.add_move_to_pokemon(alakazam, "Thunder")
 
 # ================================
 #  TURN EXECUTION

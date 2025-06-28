@@ -56,12 +56,25 @@ class Move:
         Returns:
             Move: A new instance of Move with properly parsed fields.
         """
+        _power = row.get('power', None)
+        try:
+            damage = int(_power)
+        except (TypeError, ValueError):
+            damage = 0  # ou une autre valeur par défaut
+
+        # accuracy (par défaut 100 si vide ou non convertible)
+        _acc = row.get('accuracy', None)
+        try:
+            accuracy = int(_acc)
+        except (TypeError, ValueError):
+            accuracy = 100 # a modif car implique n'echoue jamais et ca fonctionne pas bien comme ca dcp
+
         return cls(
             name=row['name'],
             element=row['type'],
-            damage=int(row['power']),
+            damage=damage,
             category=row['damage_class'].lower(),  # normalize casing
-            accuracy=int(row['accuracy']),
+            accuracy=accuracy,
             pp=int(row['pp']),
             priority=int(row.get('priority', 0)),  # Default to 0 if not present
         )

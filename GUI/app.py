@@ -4,15 +4,17 @@ import contextlib
 
 from pokemonml.create_pokemon import PokemonFactory
 from pokemonml.right_move_machine import RightMoveMachine
+from pokemonml.damage import PokemonDamageCalculator
 from pokemonml.display import display_turn_summary
-from pokemonml.config import DATA_DIR
+from pokemonml.config import DATA_DIR, TYPE_CHART_CSV, POKEMON_CSV, MOVES_CSV
 
 from io import StringIO
 
 # ─── Initialisation ───────────────────────────────────────────────────────────
 
-factory = PokemonFactory()
-rmm = RightMoveMachine()
+factory = PokemonFactory(POKEMON_CSV, MOVES_CSV)
+rmm = RightMoveMachine(verbose=False)
+pdc = PokemonDamageCalculator(TYPE_CHART_CSV, verbose=False)
 
 pokemon_df = factory.pokemon_data      # DataFrame des Pokémons (colonnes id, Name, etc.)
 moves_df = factory.moves_data        # DataFrame des mouvements (colonnes id, name, etc.)
@@ -124,22 +126,28 @@ def_lvl = st.slider("Niveau Défenseur", 1, 100, 50)
 # ─── Bouton d'action ───────────────────────────────────────────────────────────
 
 if st.button("Calculer meilleur coup"):
-    atk = factory.create_pokemon(atk_name, atk_lvl)
-    defn = factory.create_pokemon(def_name, def_lvl)
+    # creation des pokemon attaquant et defenseur
+    pkmn_atk = factory.create_pokemon(atk_name, atk_lvl)
+    pkmn_def = factory.create_pokemon(def_name, def_lvl)
 
     # Ajout des mouvements sélectionnés
     for mv in atk_selected_moves:
-        factory.add_move_to_pokemon(atk, mv)
+        factory.add_move_to_pokemon(pkmn_atk, mv)
     for mv in def_selected_moves:
-        factory.add_move_to_pokemon(defn, mv)
+        factory.add_move_to_pokemon(pkmn_def, mv)
 
-    # Meilleur coup theorique
-    best = rmm.find_best_move(atk, defn)
+    # Meilleur coup
+    best = rmm.find_best_move(pkmn_atk, pkmn_def)
+
+    real_attack = pdc.resolve_interaction(attacker=pkmn_atk,
+                                          defender=pkmn_def,
+                                          move=best.move,
+                                          random_multiplier=False)
 
     # Capture textuelle
     buf = StringIO()
     with contextlib.redirect_stdout(buf):
-        display_turn_summary(atk, defn, best, best)
+        display_turn_summary(pkmn_atk, pkmn_def, best, real_attack)
 
     # Affichage résultat
     st.subheader(f"Meilleur coup → {best.move.name}")

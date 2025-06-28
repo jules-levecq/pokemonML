@@ -68,3 +68,4 @@ def load_natures(csv_path: str) -> dict:
         }
 
     return natures
+

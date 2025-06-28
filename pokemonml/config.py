@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / 'data'
 
 # Fichiers de données externes
-POKEMON_CSV    = DATA_DIR / 'pokemon.csv'
-MOVES_CSV      = DATA_DIR / 'moves.csv'
-NATURES_CSV    = DATA_DIR / 'natures.csv'
+POKEMON_CSV = DATA_DIR / 'pokemon.csv'
+MOVES_CSV = DATA_DIR / 'moves.csv'
+NATURES_CSV = DATA_DIR / 'natures.csv'
 TYPE_CHART_CSV = DATA_DIR / 'chart.csv'

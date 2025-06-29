@@ -1,4 +1,4 @@
-from .damage import PokemonDamageCalculator, Attack
+from .damage import Attack, PokemonDamageCalculator
 from .create_pokemon import PokemonFactory, Pokemon
 from .config import POKEMON_CSV, MOVES_CSV, TYPE_CHART_CSV
 

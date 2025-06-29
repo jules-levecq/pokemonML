@@ -44,6 +44,54 @@ def display_turn_summary(attacker: Pokemon, defender: Pokemon, predicted_attack:
     print("=" * 60 + "\n")
 
 
+def display_full_turn_summary(
+    first_half: tuple,
+    second_half: tuple | None
+) -> None:
+    sep = "=" * 60
+    print("\n" + sep)
+    print("Turn Prediction")
+    print("-" * 60)
+
+    # affiche first_half
+    attacker, defender, move, result = first_half
+    print(f"{attacker.name} use {move.name} (PP left: {move.pp})")
+    if result.missed:
+        print("The move missed")
+    else:
+        print(f"→ Deals {result.effective_damage} damage to {defender.name}")
+        if result.crit:
+            print("→ It's a critical hit!")
+        print(f"→ Effectiveness: x{result.effectiveness:.2f}")
+
+    print(sep)
+
+    # affiche second_half si présent
+    if second_half:
+        attacker, defender, move, result = second_half
+        print(f"{attacker.name} use {move.name} (PP left: {move.pp})")
+        if result.missed:
+            print("The move missed")
+        else:
+            print(f"→ Deals {result.effective_damage} damage to {defender.name}")
+            if result.crit:
+                print("→ It's a critical hit!")
+            print(f"→ Effectiveness: x{result.effectiveness:.2f}")
+        print(sep)
+    else:
+        print("Le défenseur est tombé KO avant de riposter.")
+        print(sep)
+
+    # post-turn status
+    print("Post-Turn Status")
+    print("-" * 60)
+    # health mis à jour dans resolve_interaction
+    for p in (first_half[1], second_half[1] if second_half else first_half[1]):
+        print(f"{p.name}'s HP: {round(p.current_stats.health)} / {p.base_stats.health}")
+        print("-" * 60)
+    print()
+
+
 def display_streamlit_battle_summary(attacker: Pokemon, defender: Pokemon, predicted_attack: Attack, executed_attack: Attack) -> None:
     """
     Affiche un résumé détaillé du tour de combat avec Streamlit, incluant :

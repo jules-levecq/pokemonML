@@ -5,10 +5,10 @@ import random
 from pokemonml.create_pokemon import PokemonFactory
 from pokemonml.damage import PokemonDamageCalculator
 from pokemonml.right_move_machine import RightMoveMachine
-from pokemonml.display import display_turn_summary
+from pokemonml.display import display_full_turn_summary
 from pokemonml.config import POKEMON_CSV, MOVES_CSV, TYPE_CHART_CSV
+from pokemonml.battle_simulator import BattleSimulator
 from pokemonml.team import Team
-from random import randint
 
 # ================================
 #  SETUP: Initialize all systems
@@ -32,16 +32,7 @@ factory.add_move_to_pokemon(alakazam, "Thunder")
 #  TURN EXECUTION
 # ================================
 
-# 1. Prédiction du meilleur coup
-predicted_attack = right_move_machine.find_best_move(pikachu, alakazam)
 
-# 2. Exécution réelle du coup (sans hasard pour être reproductible)
-executed_attack = damage_calculator.resolve_interaction(
-    attacker=pikachu,
-    defender=alakazam,
-    move=predicted_attack.move,
-    random_multiplier=False
-)
-
-# 3. Affichage du résumé du tour
-display_turn_summary(pikachu, alakazam, predicted_attack, executed_attack)
+sim = BattleSimulator()
+f, s = sim.full_turn_interaction(pikachu, alakazam)
+display_full_turn_summary(f, s)

@@ -59,7 +59,7 @@ class PokemonDamageCalculator:
         verbose (bool): If True, print logs and debug information during calculations.
     """
 
-    def __init__(self, csv_path : str = TYPE_CHART_CSV, verbose=False):
+    def __init__(self, csv_path: str = TYPE_CHART_CSV, verbose=False):
         """
         Initialize the calculator and load the type chart from a CSV file.
 
@@ -87,7 +87,7 @@ class PokemonDamageCalculator:
         """
         return self.type_chart.loc[attack_type, defender_type]
 
-    def get_random_damage_multiplier(self, is_random=True):
+    def get_random_damage_multiplier(self, is_random: bool = True):
         """
         Return a damage multiplier in the range [0.85, 1.00] following Pokémon's random spread.
 
@@ -110,7 +110,7 @@ class PokemonDamageCalculator:
         return sum(weighted_values) / len(weighted_values) / 100
 
     @staticmethod
-    def is_crit_hit(pokemon):
+    def is_crit_hit(pokemon: Pokemon):
         """
         Determine if the attack will result in a critical hit.
 
@@ -123,7 +123,7 @@ class PokemonDamageCalculator:
         return random.random() <= pokemon.base_stats.get_crit_chance()
 
     @staticmethod
-    def move_hit(move):
+    def move_hit(move: Move):
         """
         Determine if the move hits based on its accuracy.
 
@@ -150,7 +150,7 @@ class PokemonDamageCalculator:
         return int(base_damage * 0.85 * effectiveness), int(base_damage * effectiveness)
 
     @staticmethod
-    def _clone_battle_state(attacker, defender, move):
+    def _clone_battle_state(attacker: Pokemon, defender: Pokemon, move: Move):
         """
         Clone all objects involved in the attack (for logging or analysis purposes).
 
@@ -159,7 +159,7 @@ class PokemonDamageCalculator:
         """
         return copy.deepcopy(attacker), copy.deepcopy(defender), copy.deepcopy(move)
 
-    def _build_attack(self, effective_damage, crit, effectiveness, damage_range, missed, attacker, defender, move):
+    def _build_attack(self, effective_damage, crit, effectiveness, damage_range, missed, attacker: Pokemon, defender: Pokemon, move: Move):
         """
         Build a full Attack object with deep copies of all participants.
 
@@ -178,7 +178,7 @@ class PokemonDamageCalculator:
             move=move_
         )
 
-    def _return_miss_attack(self, attacker, defender, move, reason="missed"):
+    def _return_miss_attack(self, attacker: Pokemon, defender: Pokemon, move: Move, reason="missed"):
         """
         Generate an Attack result when the move fails to land.
 
@@ -197,7 +197,7 @@ class PokemonDamageCalculator:
 
     # --- Core Damage Logic ---
 
-    def compute_base_damage(self, attacker, defender, move, is_crit=False, random_multiplier=True):
+    def compute_base_damage(self, attacker: Pokemon, defender: Pokemon, move: Move, is_crit: bool = False, random_multiplier: bool = True):
         """
         Compute the raw base damage value before rounding or applying game effects.
 
@@ -234,7 +234,7 @@ class PokemonDamageCalculator:
         random_factor = self.get_random_damage_multiplier(random_multiplier)
         return base_damage, effectiveness, random_factor, damage_range
 
-    def compute_theoretical_attack(self, attacker, defender, move, is_crit, random_multiplier):
+    def compute_theoretical_attack(self, attacker: Pokemon, defender: Pokemon, move: Move, is_crit, random_multiplier: bool):
         """
         Run a theoretical attack calculation without applying any real effects.
         
@@ -266,7 +266,7 @@ class PokemonDamageCalculator:
         
         return self._build_attack(effective_damage, is_crit, effectiveness, damage_range, False, attacker, defender, move)
 
-    def calculate_damage(self, attacker, defender, move, random_multiplier=True):
+    def calculate_damage(self, attacker: Pokemon, defender: Pokemon, move: Move, random_multiplier: bool = True):
         """
         Perform a full damage calculation, considering all possible failure points.
 
@@ -292,7 +292,7 @@ class PokemonDamageCalculator:
 
         return self._build_attack(int(base_damage * effectiveness * random_factor), is_crit, effectiveness, damage_range, False, attacker, defender, move)
 
-    def resolve_interaction(self, attacker, defender, move, random_multiplier=True) -> Attack:
+    def resolve_interaction(self, attacker: Pokemon, defender: Pokemon, move: Move, random_multiplier: bool = True) -> Attack:
         """
         Run a full attack and apply real effects: damage taken and PP used.
 

@@ -1,14 +1,11 @@
 import streamlit as st
 import pandas as pd
-import contextlib
 
 from pokemonml.create_pokemon import PokemonFactory
 from pokemonml.right_move_machine import RightMoveMachine
 from pokemonml.damage import PokemonDamageCalculator
-from pokemonml.display import display_turn_summary
+from pokemonml.display import display_streamlit_battle_summary
 from pokemonml.config import DATA_DIR, TYPE_CHART_CSV, POKEMON_CSV, MOVES_CSV
-
-from io import StringIO
 
 # ─── Initialisation ───────────────────────────────────────────────────────────
 
@@ -156,11 +153,5 @@ if st.button("Calculer meilleur coup"):
                                           move=best.move,
                                           random_multiplier=False)
 
-    # Capture textuelle
-    buf = StringIO()
-    with contextlib.redirect_stdout(buf):
-        display_turn_summary(pkmn_atk, pkmn_def, best, real_attack)
-
-    # Affichage résultat
-    st.subheader(f"Meilleur coup → {best.move.name}")
-    st.text(buf.getvalue())
+    # Affichage résultat avec la nouvelle fonction Streamlit
+    display_streamlit_battle_summary(pkmn_atk, pkmn_def, best, real_attack)
